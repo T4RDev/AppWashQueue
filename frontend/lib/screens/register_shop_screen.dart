@@ -83,12 +83,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     try {
       final List<http.MultipartFile> files = [];
 
-      // Add ID card
-      files.add(await http.MultipartFile.fromPath('id_card', _idCardFile!.path));
+      // Add ID card (รองรับทั้ง Web และ Mobile)
+      final idBytes = await _idCardFile!.readAsBytes();
+      files.add(http.MultipartFile.fromBytes('id_card', idBytes, filename: _idCardFile!.name));
 
       // Add shop images
       for (final img in _shopImages) {
-        files.add(await http.MultipartFile.fromPath('shop_images', img.path));
+        final imgBytes = await img.readAsBytes();
+        files.add(http.MultipartFile.fromBytes('shop_images', imgBytes, filename: img.name));
       }
 
       final fields = {

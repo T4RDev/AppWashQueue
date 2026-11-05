@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
+import '../core/app_snackbar.dart';
 import 'register_screen.dart';
 import 'main_navigation_screen.dart';
 
@@ -43,12 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         (route) => false,
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.errorMessage ?? 'เข้าสู่ระบบไม่สำเร็จ'),
-          backgroundColor: AppTheme.error,
-        ),
-      );
+      AppSnackBar.showError(context, authProvider.errorMessage ?? 'เข้าสู่ระบบไม่สำเร็จ');
     }
   }
 

@@ -62,6 +62,23 @@ class ApiService {
     return headers;
   }
 
+  String _formatErrorMessage(dynamic e) {
+    final str = e.toString().toLowerCase();
+    if (str.contains('socketexception') ||
+        str.contains('network is unreachable') ||
+        str.contains('failed host lookup') ||
+        str.contains('connection refused') ||
+        str.contains('clientexception') ||
+        str.contains('connection failed') ||
+        str.contains('os error')) {
+      return 'ไม่ได้เชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบสัญญาณเน็ตของคุณ';
+    }
+    if (str.contains('timeoutexception')) {
+      return 'การเชื่อมต่อหมดเวลา กรุณาลองใหม่อีกครั้ง';
+    }
+    return 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
+  }
+
   Future<ApiResponse> get(String endpoint, {Map<String, dynamic>? queryParams}) async {
     try {
       var uri = Uri.parse('${ApiConstants.baseUrl}$endpoint');
@@ -73,7 +90,7 @@ class ApiService {
       final response = await http.get(uri, headers: headers);
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 
@@ -88,7 +105,7 @@ class ApiService {
       );
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 
@@ -103,7 +120,7 @@ class ApiService {
       );
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 
@@ -118,7 +135,7 @@ class ApiService {
       );
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 
@@ -129,7 +146,7 @@ class ApiService {
       final response = await http.delete(uri, headers: headers);
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 
@@ -160,7 +177,7 @@ class ApiService {
       final response = await http.Response.fromStream(streamedResponse);
       return _handleResponse(response);
     } catch (e) {
-      return ApiResponse(success: false, message: 'เกิดข้อผิดพลาดในการอัปโหลดไฟล์: $e');
+      return ApiResponse(success: false, message: _formatErrorMessage(e));
     }
   }
 

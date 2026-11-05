@@ -8,6 +8,7 @@ import '../providers/vehicle_provider.dart';
 import '../providers/booking_provider.dart';
 import '../providers/wallet_provider.dart';
 import '../core/app_theme.dart';
+import '../core/app_snackbar.dart';
 import 'wallet_screen.dart';
 import 'my_cars_screen.dart';
 
@@ -54,23 +55,17 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Future<void> _handleConfirmBooking() async {
     if (_selectedVehicle == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาเลือกรถที่จะเข้ารับบริการ'), backgroundColor: AppTheme.error),
-      );
+      AppSnackBar.showError(context, 'กรุณาเลือกรถที่จะเข้ารับบริการ');
       return;
     }
 
     if (_selectedService == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาเลือกบริการที่ต้องการ'), backgroundColor: AppTheme.error),
-      );
+      AppSnackBar.showError(context, 'กรุณาเลือกบริการที่ต้องการ');
       return;
     }
 
     if (_selectedSlot == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาเลือกสล็อตเวลาให้บริการ'), backgroundColor: AppTheme.error),
-      );
+      AppSnackBar.showError(context, 'กรุณาเลือกสล็อตเวลาให้บริการ');
       return;
     }
 
@@ -179,12 +174,7 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(bookingProvider.errorMessage ?? 'จองคิวไม่สำเร็จ'),
-          backgroundColor: AppTheme.error,
-        ),
-      );
+      AppSnackBar.showError(context, bookingProvider.errorMessage ?? 'จองคิวไม่สำเร็จ');
     }
   }
 

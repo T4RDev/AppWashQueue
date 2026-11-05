@@ -111,10 +111,10 @@ class _WalletScreenState extends State<WalletScreen> {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () async {
+                Navigator.of(ctx).pop();
                 final walletProvider = Provider.of<WalletProvider>(context, listen: false);
-                await walletProvider.confirmTopUp(amount);
-                if (mounted) {
-                  Navigator.pop(ctx);
+                final success = await walletProvider.confirmTopUp(amount);
+                if (mounted && success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('เติมเงินเข้ากระเป๋าสำเร็จเรียบร้อยแล้ว! 💸'),
@@ -176,6 +176,8 @@ class _WalletScreenState extends State<WalletScreen> {
               final amount = double.tryParse(amountController.text.trim());
               if (amount == null || amount <= 0) return;
 
+              Navigator.of(ctx).pop();
+
               final walletProvider = Provider.of<WalletProvider>(context, listen: false);
               final success = await walletProvider.requestWithdrawal(
                 amount: amount,
@@ -185,7 +187,6 @@ class _WalletScreenState extends State<WalletScreen> {
               );
 
               if (mounted) {
-                Navigator.pop(ctx);
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

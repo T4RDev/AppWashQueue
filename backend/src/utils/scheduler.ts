@@ -50,3 +50,4 @@ export const initReminderScheduler = () => {
 
   console.log('[WashQ Scheduler] 30-minute reminder job initialized successfully.');
 };
+

@@ -60,14 +60,20 @@ export const registerShop = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // ตรวจสอบ Email ซ้ำ
+    // ตรวจสอบ Email และ Phone ซ้ำ
     const [existing] = await connection.execute<RowDataPacket[]>(
-      'SELECT id FROM users WHERE email = ?',
-      [email]
+      'SELECT id, email, phone FROM users WHERE email = ? OR phone = ?',
+      [email, phone]
     );
     if (existing.length > 0) {
-      sendError(res, 'อีเมลนี้ถูกใช้งานในระบบแล้ว', 400);
-      return;
+      if (existing[0].email === email) {
+        sendError(res, 'อีเมลนี้ถูกใช้งานในระบบแล้ว', 400);
+        return;
+      }
+      if (existing[0].phone === phone) {
+        sendError(res, 'เบอร์โทรศัพท์นี้ถูกใช้งานในระบบแล้ว', 400);
+        return;
+      }
     }
 
     await connection.beginTransaction();
@@ -375,3 +381,4 @@ export const getAvailableSlots = async (req: Request, res: Response): Promise<vo
     sendError(res, 'เกิดข้อผิดพลาดในการตรวจสอบสล็อตเวลา', 500, error);
   }
 };
+

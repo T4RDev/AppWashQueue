@@ -11,3 +11,4 @@ router.get('/my', getMyBookings);
 router.post('/:id/cancel', cancelBooking);
 
 export default router;
+

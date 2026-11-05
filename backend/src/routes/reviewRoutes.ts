@@ -8,3 +8,4 @@ router.get('/shop/:shopId', getShopReviews);
 router.post('/', authenticateToken, submitReview);
 
 export default router;
+

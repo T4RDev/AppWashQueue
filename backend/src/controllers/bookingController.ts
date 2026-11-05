@@ -344,3 +344,4 @@ export const cancelBooking = async (req: AuthRequest, res: Response): Promise<vo
     connection.release();
   }
 };
+

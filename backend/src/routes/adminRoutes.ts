@@ -44,3 +44,4 @@ router.patch('/withdrawals/:id/process', upload.single('transfer_proof'), proces
 router.get('/bookings', getAllBookings);
 
 export default router;
+

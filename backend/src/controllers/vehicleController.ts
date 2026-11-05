@@ -149,3 +149,4 @@ export const deleteVehicle = async (req: AuthRequest, res: Response): Promise<vo
     sendError(res, 'เกิดข้อผิดพลาดในการลบข้อมูลรถ', 500, error);
   }
 };
+

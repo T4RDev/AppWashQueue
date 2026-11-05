@@ -17,3 +17,4 @@ router.put('/:id', updateVehicle);
 router.delete('/:id', deleteVehicle);
 
 export default router;
+

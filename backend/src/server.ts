@@ -64,7 +64,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start Server
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`====================================================`);
   console.log(`[WashQ Backend] Server is running on port ${PORT}`);
   console.log(`[WashQ Backend] Mode: ${process.env.NODE_ENV || 'development'}`);

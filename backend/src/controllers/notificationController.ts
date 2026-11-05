@@ -59,3 +59,4 @@ export const markAllAsRead = async (req: AuthRequest, res: Response): Promise<vo
     sendError(res, 'เกิดข้อผิดพลาด', 500, error);
   }
 };
+

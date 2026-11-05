@@ -58,3 +58,4 @@ export default router;
 function patch(path: string, handler: any) {
   router.patch(path, handler);
 }
+

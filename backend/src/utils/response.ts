@@ -25,3 +25,4 @@ export const sendError = (
     error: process.env.NODE_ENV === 'development' ? error : undefined
   });
 };
+

@@ -18,3 +18,4 @@ export const createNotification = async (
     console.error(`[Notification Error] Failed to create notification for user ${userId}:`, error);
   }
 };
+

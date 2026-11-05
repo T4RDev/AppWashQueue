@@ -25,3 +25,4 @@ router.get('/:id', getShopDetail);
 router.get('/:id/available-slots', getAvailableSlots);
 
 export default router;
+

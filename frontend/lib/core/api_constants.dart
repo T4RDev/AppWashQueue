@@ -1,19 +1,29 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'dart:io' show Platform;
 
 class ApiConstants {
-  // สำหรับ Android Emulator จะใช้ 10.0.2.2 เพื่อเชื่อมต่อไปยัง localhost ของเครื่องโฮสต์
-  // สำหรับ iOS Simulator หรือ Web/Windows Desktop จะใช้ localhost
+  // รองรับทั้ง Flutter Web, Android Emulator และ iOS/Desktop
   static String get baseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5000/api';
+    if (kIsWeb) {
+      return 'http://localhost:5000/api';
     }
+    try {
+      if (Platform.isAndroid) {
+        return 'http://10.0.2.2:5000/api';
+      }
+    } catch (_) {}
     return 'http://localhost:5000/api';
   }
 
   static String get uploadsUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5000';
+    if (kIsWeb) {
+      return 'http://localhost:5000';
     }
+    try {
+      if (Platform.isAndroid) {
+        return 'http://10.0.2.2:5000';
+      }
+    } catch (_) {}
     return 'http://localhost:5000';
   }
 
@@ -65,4 +75,3 @@ class ApiConstants {
   // Notifications
   static const String notifications = '/notifications';
 }
-

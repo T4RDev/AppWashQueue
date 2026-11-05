@@ -1,0 +1,17 @@
+import { Router } from 'express';
+import {
+  getMyNotifications,
+  markAsRead,
+  markAllAsRead
+} from '../controllers/notificationController';
+import { authenticateToken } from '../middlewares/auth';
+
+const router = Router();
+
+router.use(authenticateToken);
+
+router.get('/', getMyNotifications);
+router.patch('/read-all', markAllAsRead);
+router.patch('/:id/read', markAsRead);
+
+export default router;

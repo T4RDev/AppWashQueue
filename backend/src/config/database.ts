@@ -29,3 +29,4 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
 };
 
 export default pool;
+

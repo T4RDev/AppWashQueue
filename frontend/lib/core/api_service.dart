@@ -35,18 +35,26 @@ class ApiService {
 
   Future<void> setToken(String? token) async {
     _token = token;
-    final prefs = await SharedPreferences.getInstance();
-    if (token != null) {
-      await prefs.setString('jwt_token', token);
-    } else {
-      await prefs.remove('jwt_token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (token != null) {
+        await prefs.setString('jwt_token', token);
+      } else {
+        await prefs.remove('jwt_token');
+      }
+    } catch (e) {
+      // In-memory fallback if native engine detachment occurs
     }
   }
 
   Future<String?> getToken() async {
     if (_token != null) return _token;
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('jwt_token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _token = prefs.getString('jwt_token');
+    } catch (e) {
+      // In-memory fallback if native engine detachment occurs
+    }
     return _token;
   }
 

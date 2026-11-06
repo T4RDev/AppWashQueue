@@ -17,12 +17,16 @@ class BookingScreen extends StatefulWidget {
   final ShopModel shop;
   final String? initialVehicleType;
   final String? initialServiceName;
+  final ServiceModel? initialService;
+  final double? initialPrice;
 
   const BookingScreen({
     super.key,
     required this.shop,
     this.initialVehicleType,
     this.initialServiceName,
+    this.initialService,
+    this.initialPrice,
   });
 
   @override
@@ -65,7 +69,7 @@ class _BookingScreenState extends State<BookingScreen> {
           if (widget.initialVehicleType != null) {
             try {
               matched = vProvider.vehicles.firstWhere(
-                (v) => v.vehicleType == widget.initialVehicleType,
+                (v) => v.vehicleType.toLowerCase() == widget.initialVehicleType!.toLowerCase(),
               );
             } catch (_) {}
           }
@@ -73,21 +77,38 @@ class _BookingScreenState extends State<BookingScreen> {
           setState(() => _selectedVehicle = matched);
         }
 
-        // 2. Prioritize matching service name or pick first service
-        if (widget.shop.services.isNotEmpty) {
-          ServiceModel? matchedService;
+        // 2. Exact match service first! NEVER allow substring collisions like 'ขัดเคลือบสีระเบิดขี้ไคล' matching 'เคลือบสี'
+        ServiceModel? matchedService = widget.initialService;
+        if (matchedService == null && widget.shop.services.isNotEmpty) {
           if (widget.initialServiceName != null) {
             try {
+              // Exact match
               matchedService = widget.shop.services.firstWhere(
-                (s) =>
-                    s.name.contains(widget.initialServiceName!) ||
-                    widget.initialServiceName!.contains(s.name),
+                (s) => s.name.trim() == widget.initialServiceName!.trim(),
               );
-            } catch (_) {}
+            } catch (_) {
+              try {
+                // If no exact match, filter by vehicle type first
+                matchedService = widget.shop.services.firstWhere(
+                  (s) => s.vehicleType == (widget.initialVehicleType ?? 'car'),
+                );
+              } catch (_) {}
+            }
           }
           matchedService ??= widget.shop.services.first;
-          setState(() => _selectedService = matchedService);
         }
+
+        // Fallback ServiceModel if null but initial params provided
+        if (matchedService == null && (widget.initialServiceName != null || widget.initialPrice != null)) {
+          matchedService = ServiceModel(
+            id: widget.initialService?.id ?? 1,
+            name: widget.initialServiceName ?? widget.initialService?.name ?? 'เคลือบสี',
+            vehicleType: widget.initialVehicleType ?? 'car',
+            price: widget.initialPrice ?? widget.initialService?.price ?? 350.0,
+          );
+        }
+
+        setState(() => _selectedService = matchedService);
 
         _fetchSlots();
       }
@@ -114,7 +135,7 @@ class _BookingScreenState extends State<BookingScreen> {
     final code = _discountController.text.trim().toUpperCase();
     if (code.isEmpty) return;
 
-    final price = _selectedService?.price ?? 150.0;
+    final price = _selectedService?.price ?? widget.initialPrice ?? 150.0;
     if (code == 'WASH10' || code == 'DISCOUNT10') {
       setState(() {
         _appliedCoupon = code;
@@ -155,7 +176,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   double get _finalPrice {
-    final basePrice = _selectedService?.price ?? 150.0;
+    final basePrice = _selectedService?.price ?? widget.initialPrice ?? 150.0;
     final finalP = basePrice - _discountAmount;
     return finalP < 0 ? 0 : finalP;
   }
@@ -955,14 +976,14 @@ class _BookingScreenState extends State<BookingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'บริการ (${_selectedVehicle?.vehicleTypeThai ?? 'รถยนต์'})',
+                        'บริการ (${_selectedVehicle?.vehicleTypeThai ?? (widget.initialVehicleType == 'motorcycle' ? 'รถจักรยานยนต์' : (widget.initialVehicleType == 'suv' ? 'SUV' : 'รถยนต์'))})',
                         style: const TextStyle(
                           fontSize: 13.5,
                           color: AppTheme.textSecondary,
                         ),
                       ),
                       Text(
-                        _selectedService?.name ?? 'ล้างอัดฉีด',
+                        _selectedService?.name ?? widget.initialServiceName ?? widget.initialService?.name ?? 'ล้างอัดฉีด',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

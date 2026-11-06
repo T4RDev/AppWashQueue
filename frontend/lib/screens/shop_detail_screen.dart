@@ -60,15 +60,34 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       reviewCount: 126,
     );
 
-    // Mock services matching 2.2_Shop_Detail.png
-    final services = [
-      {'name': 'ล้างอัดฉีด', 'desc': 'รถยนต์ • ประมาณ 45 นาที', 'price': 150},
-      {'name': 'ดูดฝุ่นภายใน', 'desc': 'รถยนต์ • ประมาณ 30 นาที', 'price': 80},
-      {'name': 'เคลือบสี', 'desc': 'รถยนต์ • ประมาณ 60 นาที', 'price': 350},
-    ];
+    // Filter services by vehicle type from API or fallback matching mockup 2.2_Shop_Detail.png
+    List<ServiceModel> services = currentShop.services
+        .where((s) => s.vehicleType == _selectedVehicleType)
+        .toList();
 
-    final selectedService = services[_selectedServiceIndex];
-    final totalPrice = selectedService['price'] as int;
+    if (services.isEmpty) {
+      if (_selectedVehicleType == 'car') {
+        services = [
+          ServiceModel(id: 1, name: 'ล้างอัดฉีด', vehicleType: 'car', price: 150),
+          ServiceModel(id: 2, name: 'ดูดฝุ่นภายใน', vehicleType: 'car', price: 80),
+          ServiceModel(id: 6, name: 'เคลือบสี', vehicleType: 'car', price: 350),
+          ServiceModel(id: 5, name: 'ขัดเคลือบสีระเบิดขี้ไคล', vehicleType: 'car', price: 1200),
+        ];
+      } else if (_selectedVehicleType == 'suv') {
+        services = [
+          ServiceModel(id: 3, name: 'ล้างสี ดูดฝุ่น SUV / กระบะ', vehicleType: 'suv', price: 350),
+          ServiceModel(id: 7, name: 'เคลือบสี SUV', vehicleType: 'suv', price: 450),
+        ];
+      } else {
+        services = [
+          ServiceModel(id: 4, name: 'ล้างรถจักรยานยนต์ บิ๊กไบค์', vehicleType: 'motorcycle', price: 180),
+        ];
+      }
+    }
+
+    final safeIndex = services.isEmpty ? 0 : _selectedServiceIndex.clamp(0, services.length - 1);
+    final selectedService = services.isNotEmpty ? services[safeIndex] : null;
+    final totalPrice = selectedService?.price.toInt() ?? 150;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
@@ -242,8 +261,14 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
                   // Service Items with radio checkmark
                   ...List.generate(services.length, (idx) {
-                    final isSelected = _selectedServiceIndex == idx;
+                    final isSelected = safeIndex == idx;
                     final s = services[idx];
+                    final vtText = _selectedVehicleType == 'motorcycle'
+                        ? 'จักรยานยนต์'
+                        : (_selectedVehicleType == 'suv' ? 'SUV' : 'รถยนต์');
+                    final estTime = s.name.contains('เคลือบ')
+                        ? '60 นาที'
+                        : (s.name.contains('ดูดฝุ่น') ? '30 นาที' : '45 นาที');
 
                     return GestureDetector(
                       onTap: () => setState(() => _selectedServiceIndex = idx),
@@ -271,7 +296,11 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: Icon(
-                                Icons.directions_car_filled,
+                                _selectedVehicleType == 'motorcycle'
+                                    ? Icons.two_wheeler
+                                    : (_selectedVehicleType == 'suv'
+                                        ? Icons.directions_car_filled
+                                        : Icons.directions_car_filled),
                                 color: isSelected ? AppTheme.primaryColor : Colors.grey.shade600,
                                 size: 22,
                               ),
@@ -281,14 +310,14 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(s['name'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                  Text(s.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                                   const SizedBox(height: 2),
-                                  Text(s['desc'] as String, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                                  Text('$vtText • ประมาณ $estTime', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
                                 ],
                               ),
                             ),
                             Text(
-                              '฿${s['price']}',
+                              '฿${s.price.toInt()}',
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
                             ),
                             const SizedBox(width: 10),
@@ -358,7 +387,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                       builder: (_) => BookingScreen(
                         shop: currentShop,
                         initialVehicleType: _selectedVehicleType,
-                        initialServiceName: selectedService['name'] as String?,
+                        initialService: selectedService,
+                        initialServiceName: selectedService?.name,
+                        initialPrice: selectedService?.price,
                       ),
                     ),
                   );
@@ -432,7 +463,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     final isSelected = _selectedVehicleType == key;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedVehicleType = key),
+        onTap: () => setState(() {
+          _selectedVehicleType = key;
+          _selectedServiceIndex = 0;
+        }),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(

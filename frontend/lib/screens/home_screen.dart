@@ -5,6 +5,7 @@ import '../providers/shop_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/wallet_provider.dart';
 import '../core/app_theme.dart';
+import '../widgets/shimmer_loading.dart';
 import 'shop_detail_screen.dart';
 import 'welcome_screen.dart';
 import 'wallet_screen.dart';
@@ -339,7 +340,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Shop Cards List
               if (shopProvider.isLoading && shopProvider.shops.isEmpty)
-                const Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator()))
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: const [
+                      ShimmerShopCard(),
+                      ShimmerShopCard(),
+                      ShimmerShopCard(),
+                    ],
+                  ),
+                )
               else if (shopProvider.shops.isEmpty)
                 Container(
                   margin: const EdgeInsets.all(20),

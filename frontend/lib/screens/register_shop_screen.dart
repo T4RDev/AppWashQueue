@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -8,6 +9,7 @@ import '../core/api_service.dart';
 import '../core/api_constants.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/real_map_picker.dart';
 
 class RegisterShopScreen extends StatefulWidget {
@@ -60,6 +62,26 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     'ออมสิน',
     'พร้อมเพย์ (PromptPay)',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      final user = auth.currentUser;
+      if (user != null) {
+        if (_emailController.text.isEmpty && user.email.isNotEmpty) {
+          _emailController.text = user.email;
+        }
+        if (_phoneController.text.isEmpty && user.phone.isNotEmpty) {
+          _phoneController.text = user.phone;
+        }
+        if (_bankAccNameController.text.isEmpty && user.fullName.isNotEmpty) {
+          _bankAccNameController.text = user.fullName;
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {

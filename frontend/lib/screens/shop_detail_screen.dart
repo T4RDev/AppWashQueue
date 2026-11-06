@@ -353,7 +353,13 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => BookingScreen(shop: currentShop)),
+                    MaterialPageRoute(
+                      builder: (_) => BookingScreen(
+                        shop: currentShop,
+                        initialVehicleType: _selectedVehicleType,
+                        initialServiceName: selectedService['name'] as String?,
+                      ),
+                    ),
                   );
                 },
                 icon: const Icon(Icons.calendar_today_outlined, size: 18),

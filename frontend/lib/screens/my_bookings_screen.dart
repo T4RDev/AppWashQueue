@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/booking_provider.dart';
@@ -15,6 +16,7 @@ class MyBookingsScreen extends StatefulWidget {
 
 class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Timer? _autoPollTimer;
 
   @override
   void initState() {
@@ -23,10 +25,18 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<BookingProvider>(context, listen: false).fetchMyBookings();
     });
+
+    // Auto poll every 10 seconds for live queue status updates
+    _autoPollTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (mounted) {
+        Provider.of<BookingProvider>(context, listen: false).fetchMyBookings();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _autoPollTimer?.cancel();
     _tabController.dispose();
     super.dispose();
   }
@@ -66,6 +76,86 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     } else {
       AppSnackBar.showError(context, bookingProvider.errorMessage ?? 'ยกเลิกไม่สำเร็จ');
     }
+  }
+
+  void _showCheckInQrDialog(BuildContext context, BookingModel b) {
+    final qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=WASHQ-BOOKING-${b.id}';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        title: Center(
+          child: Column(
+            children: [
+              Text(b.shopName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 4),
+              Text(
+                'คิววันที่ ${b.bookingDate} (${b.slotTimeRange})',
+                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+              ),
+            ],
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade200),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10),
+                ],
+              ),
+              child: Image.network(
+                qrUrl,
+                width: 190,
+                height: 190,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Icon(Icons.qr_code_2, size: 120, color: Color(0xFF0066FF)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6F4FF),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'รหัสคิว: #WQ-${b.id.toString().padLeft(5, '0')}',
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0066FF), fontSize: 14),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'รถ: ${b.vehiclePlate} (${b.vehicleType})',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'ยื่น QR นี้ให้พนักงานที่หน้าร้านเพื่อเช็คอินเริ่มรับบริการ',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted),
+            ),
+          ],
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0066FF),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('ปิดหน้าต่าง', style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -253,6 +343,22 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
               ],
             ),
           ),
+
+          // QR Check-in Button for Active Bookings
+          if (b.status == 'pending_service' || b.status == 'checked_in' || isInProgress) ...[
+            const SizedBox(height: 10),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF0066FF),
+                side: const BorderSide(color: Color(0xFF91CAFF)),
+                minimumSize: const Size(double.infinity, 38),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () => _showCheckInQrDialog(context, b),
+              icon: const Icon(Icons.qr_code_2, size: 18),
+              label: const Text('แสดง QR สำหรับเช็คอินหน้าร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            ),
+          ],
 
           // Case 1: In Progress Live Stepper (Matches 2.7_BookingManage.png)
           if (isInProgress) ...[

@@ -53,13 +53,75 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
     }
   }
 
+  void _showQrCheckInDialog() {
+    final codeController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: const [
+            Icon(Icons.qr_code_scanner, color: Color(0xFF0066FF)),
+            SizedBox(width: 8),
+            Text('เช็คอินคิวลูกค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'กรอกรหัสคิว หรือสแกน QR Code ของลูกค้าเพื่อเช็คอิน',
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: codeController,
+              decoration: const InputDecoration(
+                hintText: 'เช่น #WQ-00001 หรือ 1',
+                prefixIcon: Icon(Icons.confirmation_number_outlined),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('ยกเลิก')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0066FF),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: () {
+              final raw = codeController.text.trim().replaceAll(RegExp(r'[^0-9]'), '');
+              final id = int.tryParse(raw);
+              if (id == null) {
+                AppSnackBar.showError(context, 'รหัสคิวไม่ถูกต้อง');
+                return;
+              }
+              Navigator.pop(ctx);
+              _updateStatus(id, 'in_service');
+            },
+            child: const Text('เช็คอินเริ่มล้าง', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('รายการจองทั้งหมด', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text('จัดการคิวร้านค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner, color: Color(0xFF0066FF)),
+            tooltip: 'เช็คอินคิวด้วย QR',
+            onPressed: _showQrCheckInDialog,
+          ),
+        ],
       ),
       body: Column(
         children: [

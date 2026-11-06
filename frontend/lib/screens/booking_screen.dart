@@ -15,7 +15,15 @@ import 'pay_credit_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   final ShopModel shop;
-  const BookingScreen({super.key, required this.shop});
+  final String? initialVehicleType;
+  final String? initialServiceName;
+
+  const BookingScreen({
+    super.key,
+    required this.shop,
+    this.initialVehicleType,
+    this.initialServiceName,
+  });
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -31,10 +39,42 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<VehicleProvider>(context, listen: false).fetchMyVehicles();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final vProvider = Provider.of<VehicleProvider>(context, listen: false);
+      await vProvider.fetchMyVehicles();
       Provider.of<WalletProvider>(context, listen: false).fetchMyWallet();
-      _fetchSlots();
+
+      if (mounted) {
+        // 1. Auto-select vehicle: prioritize matching type or 1st car
+        if (vProvider.vehicles.isNotEmpty) {
+          VehicleModel? matched;
+          if (widget.initialVehicleType != null) {
+            try {
+              matched = vProvider.vehicles.firstWhere(
+                (v) => v.vehicleType == widget.initialVehicleType,
+              );
+            } catch (_) {}
+          }
+          matched ??= vProvider.vehicles.first;
+          setState(() => _selectedVehicle = matched);
+        }
+
+        // 2. Auto-select service: match name or 1st service
+        if (widget.shop.services.isNotEmpty) {
+          ServiceModel? matchedService;
+          if (widget.initialServiceName != null) {
+            try {
+              matchedService = widget.shop.services.firstWhere(
+                (s) => s.name.contains(widget.initialServiceName!) || widget.initialServiceName!.contains(s.name),
+              );
+            } catch (_) {}
+          }
+          matchedService ??= widget.shop.services.first;
+          setState(() => _selectedService = matchedService);
+        }
+
+        _fetchSlots();
+      }
     });
   }
 

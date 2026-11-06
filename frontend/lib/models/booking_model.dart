@@ -98,6 +98,9 @@ class BookingModel {
     }
   }
 
+  String get slotTimeRange => '${startTime.length >= 5 ? startTime.substring(0, 5) : startTime} - ${endTime.length >= 5 ? endTime.substring(0, 5) : endTime}';
+  String get vehiclePlate => plateNumber;
+
   bool get canCancel => status == 'pending_service';
   bool get canReview => status == 'completed' && reviewId == null;
 }

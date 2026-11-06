@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
+import '../core/app_router.dart';
 import 'register_screen.dart';
 import 'main_navigation_screen.dart';
 
@@ -38,9 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
+      final target = AppRouter.getHomeScreenForUser(authProvider.currentUser);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+        MaterialPageRoute(builder: (_) => target),
         (route) => false,
       );
     } else {

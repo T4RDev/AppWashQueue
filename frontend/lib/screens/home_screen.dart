@@ -6,6 +6,8 @@ import '../core/app_theme.dart';
 import '../core/api_constants.dart';
 import 'shop_detail_screen.dart';
 import 'welcome_screen.dart';
+import 'admin/admin_main_navigation_screen.dart';
+import 'owner/owner_main_navigation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isGuest;
@@ -59,6 +61,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          if (authProvider.currentUser?.isAdmin == true)
+            IconButton(
+              icon: const Icon(Icons.shield, color: AppTheme.primaryColor),
+              tooltip: 'แดชบอร์ดแอดมิน',
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminMainNavigationScreen()),
+                );
+              },
+            ),
+          if (authProvider.currentUser?.isOwner == true)
+            IconButton(
+              icon: const Icon(Icons.storefront, color: AppTheme.primaryColor),
+              tooltip: 'แดชบอร์ดเจ้าของร้าน',
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const OwnerMainNavigationScreen()),
+                );
+              },
+            ),
           if (!widget.isGuest)
             IconButton(
               icon: const Icon(Icons.logout, color: AppTheme.error),

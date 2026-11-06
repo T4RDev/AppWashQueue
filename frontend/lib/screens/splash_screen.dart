@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
 import 'welcome_screen.dart';
 import 'main_navigation_screen.dart';
+import '../core/app_router.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,9 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
     if (isLoggedIn) {
+      final target = AppRouter.getHomeScreenForUser(authProvider.currentUser);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+        MaterialPageRoute(builder: (_) => target),
       );
     } else {
       Navigator.pushReplacement(

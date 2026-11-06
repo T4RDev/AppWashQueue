@@ -7,6 +7,8 @@ import 'my_bookings_screen.dart';
 import 'wallet_screen.dart';
 import 'my_cars_screen.dart';
 import 'login_screen.dart';
+import 'owner/owner_main_navigation_screen.dart';
+import 'admin/admin_main_navigation_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final bool isGuest;
@@ -23,6 +25,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final isGuest = widget.isGuest || !authProvider.isAuthenticated;
+
+    // ถ้าเป็นแอดมินหรือเจ้าของร้าน ให้แสดงหน้าแผงควบคุมของบทบาทนั้นทันที ไม่ปนกับหน้าสมาชิก
+    if (!isGuest && authProvider.currentUser != null) {
+      if (authProvider.currentUser!.isAdmin) {
+        return const AdminMainNavigationScreen();
+      }
+      if (authProvider.currentUser!.isOwner) {
+        return const OwnerMainNavigationScreen();
+      }
+    }
 
     final screens = [
       HomeScreen(isGuest: isGuest),

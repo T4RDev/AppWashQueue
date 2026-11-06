@@ -1,26 +1,42 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Primary Palette
-  static const Color primaryColor = Color(0xFF1E88E5); // Modern Tech Blue
-  static const Color primaryDark = Color(0xFF0D47A1);
-  static const Color primaryLight = Color(0xFFE3F2FD);
-  static const Color accentColor = Color(0xFF00ACC1); // Fresh Aqua Cyan
-  
+  // Primary Palette (Vibrant Tech Blue matching WashQ-screens)
+  static const Color primaryColor = Color(0xFF0066FF);
+  static const Color primaryDark = Color(0xFF0F2B5C);
+  static const Color primaryLight = Color(0xFFE8F3FF);
+  static const Color accentColor = Color(0xFF00C6FF);
+
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF0066FF), Color(0xFF00C6FF)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient navyGradient = LinearGradient(
+    colors: [Color(0xFF0F2B5C), Color(0xFF0066FF)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // Neutral Colors
-  static const Color backgroundColor = Color(0xFFF8FAFC);
+  static const Color backgroundColor = Color(0xFFF6F8FB);
   static const Color surfaceColor = Colors.white;
   static const Color cardColor = Colors.white;
-  static const Color textPrimary = Color(0xFF1E293B);
+  static const Color textPrimary = Color(0xFF0F172A);
   static const Color textSecondary = Color(0xFF64748B);
   static const Color textMuted = Color(0xFF94A3B8);
   static const Color borderLight = Color(0xFFE2E8F0);
 
-  // Status Colors
-  static const Color success = Color(0xFF10B981);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFEF4444);
-  static const Color info = Color(0xFF3B82F6);
+  // Status Colors (Matching WashQ badges)
+  static const Color success = Color(0xFF389E0D);
+  static const Color successLight = Color(0xFFF6FFED);
+  static const Color warning = Color(0xFFD46B08);
+  static const Color warningLight = Color(0xFFFFF7E6);
+  static const Color error = Color(0xFFCF1322);
+  static const Color errorLight = Color(0xFFFFF2F0);
+  static const Color info = Color(0xFF0066FF);
+  static const Color infoLight = Color(0xFFE8F3FF);
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -49,13 +65,13 @@ class AppTheme {
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
-          elevation: 2,
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -64,11 +80,11 @@ class AppTheme {
           minimumSize: const Size(double.infinity, 50),
           side: const BorderSide(color: primaryColor, width: 1.5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -77,19 +93,19 @@ class AppTheme {
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: borderLight),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: borderLight),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: error),
         ),
         hintStyle: const TextStyle(color: textMuted, fontSize: 14),
@@ -97,9 +113,9 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: surfaceColor,
-        elevation: 1.5,
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(22),
           side: const BorderSide(color: borderLight, width: 0.8),
         ),
       ),

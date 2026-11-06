@@ -41,6 +41,8 @@ class ShopModel {
     this.images = const [],
   });
 
+  double get rating => averageRating;
+
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
       id: json['id'] ?? 0,

@@ -18,3 +18,4 @@ class AppRouter {
     return const MainNavigationScreen(isGuest: false);
   }
 }
+

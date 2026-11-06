@@ -30,15 +30,16 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedTypes = /jpeg|jpg|png|webp/;
-  const ext = path.extname(file.originalname).toLowerCase();
-  const mime = allowedTypes.test(file.mimetype);
-  const extValid = allowedTypes.test(ext.replace('.', ''));
+  const allowedExts = /jpeg|jpg|png|webp|pdf/i;
+  const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
 
-  if (mime && extValid) {
+  const extValid = allowedExts.test(ext);
+  const mimeValid = /image\/(jpeg|jpg|png|webp)|application\/pdf|application\/octet-stream/i.test(file.mimetype);
+
+  if (extValid || mimeValid) {
     cb(null, true);
   } else {
-    cb(new Error('รองรับเฉพาะไฟล์รูปภาพ (jpg, jpeg, png, webp) เท่านั้น'));
+    cb(new Error('รองรับเฉพาะไฟล์รูปภาพ (jpg, jpeg, png, webp) หรือเอกสาร PDF เท่านั้น'));
   }
 };
 

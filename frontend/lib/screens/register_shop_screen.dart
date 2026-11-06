@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:geolocator/geolocator.dart';
 import '../core/api_service.dart';
 import '../core/api_constants.dart';
@@ -172,6 +174,21 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     setState(() => _currentStep = 3);
   }
 
+  MediaType _getMediaType(String ext) {
+    switch (ext.toLowerCase()) {
+      case 'png':
+        return MediaType('image', 'png');
+      case 'webp':
+        return MediaType('image', 'webp');
+      case 'pdf':
+        return MediaType('application', 'pdf');
+      case 'jpg':
+      case 'jpeg':
+      default:
+        return MediaType('image', 'jpeg');
+    }
+  }
+
   Future<void> _handleSubmit() async {
     if (_emailController.text.trim().isEmpty || !_emailController.text.contains('@')) {
       AppSnackBar.showError(context, 'กรุณากรอกอีเมลร้านค้าให้ถูกต้อง');
@@ -204,11 +221,24 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       final List<http.MultipartFile> files = [];
 
       final idBytes = await _idCardFile!.readAsBytes();
-      files.add(http.MultipartFile.fromBytes('id_card', idBytes, filename: _idCardFile!.name));
+      final idExt = _idCardFile!.name.contains('.') ? _idCardFile!.name.split('.').last.toLowerCase() : 'png';
+      files.add(http.MultipartFile.fromBytes(
+        'id_card',
+        idBytes,
+        filename: 'id_card_${DateTime.now().millisecondsSinceEpoch}.$idExt',
+        contentType: _getMediaType(idExt),
+      ));
 
-      for (final img in _shopImages) {
+      for (int i = 0; i < _shopImages.length; i++) {
+        final img = _shopImages[i];
         final imgBytes = await img.readAsBytes();
-        files.add(http.MultipartFile.fromBytes('shop_images', imgBytes, filename: img.name));
+        final imgExt = img.name.contains('.') ? img.name.split('.').last.toLowerCase() : 'jpg';
+        files.add(http.MultipartFile.fromBytes(
+          'shop_images',
+          imgBytes,
+          filename: 'shop_${i + 1}_${DateTime.now().millisecondsSinceEpoch}.$imgExt',
+          contentType: _getMediaType(imgExt),
+        ));
       }
 
       final fields = {
@@ -947,8 +977,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              // Show added photos or placeholder slots
+              // Show added photos with real thumbnail preview
               ...List.generate(_shopImages.length, (idx) {
+                final img = _shopImages[idx];
                 return Stack(
                   children: [
                     Container(
@@ -956,21 +987,29 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       height: 80,
                       margin: const EdgeInsets.only(right: 10),
                       decoration: BoxDecoration(
-                        color: idx == 0
-                            ? const Color(0xFF0066FF)
-                            : idx == 1
-                                ? const Color(0xFF13C2C2)
-                                : const Color(0xFF722ED1),
+                        color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFF0066FF).withOpacity(0.3)),
                         boxShadow: [
                           BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6),
                         ],
                       ),
-                      child: Center(
-                        child: Icon(
-                          idx % 2 == 0 ? Icons.storefront : Icons.directions_car,
-                          color: Colors.white,
-                          size: 36,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: FutureBuilder<Uint8List>(
+                          future: img.readAsBytes(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Image.memory(snapshot.data!, fit: BoxFit.cover);
+                            }
+                            return const Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -980,9 +1019,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       child: GestureDetector(
                         onTap: () => setState(() => _shopImages.removeAt(idx)),
                         child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-                          child: const Icon(Icons.close, color: Colors.white, size: 14),
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(color: Colors.black87, shape: BoxShape.circle),
+                          child: const Icon(Icons.close, color: Colors.white, size: 12),
                         ),
                       ),
                     ),

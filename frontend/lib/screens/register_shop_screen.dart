@@ -6,6 +6,7 @@ import '../core/api_service.dart';
 import '../core/api_constants.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
+import '../widgets/real_map_picker.dart';
 
 class RegisterShopScreen extends StatefulWidget {
   const RegisterShopScreen({super.key});
@@ -292,22 +293,27 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Stepper Header (Matches 1.5_Request_Open_Shop.png)
-              if (_currentStep < 4) _buildStepperHeader(),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 620),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Stepper Header (Matches 1.5_Request_Open_Shop.png)
+                  if (_currentStep < 4) _buildStepperHeader(),
 
-              const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-              // Step Content
-              if (_currentStep == 1) _buildStep1(),
-              if (_currentStep == 2) _buildStep2(),
-              if (_currentStep == 3) _buildStep3(),
-              if (_currentStep == 4) _buildStep4Success(),
-            ],
+                  // Step Content
+                  if (_currentStep == 1) _buildStep1(),
+                  if (_currentStep == 2) _buildStep2(),
+                  if (_currentStep == 3) _buildStep3(),
+                  if (_currentStep == 4) _buildStep4Success(),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -503,104 +509,25 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         ),
         const SizedBox(height: 4),
         const Text(
-          'ระบุพิกัด GPS เพื่อให้ลูกค้าในบริเวณใกล้เคียงค้นพบร้านของคุณบนแผนที่',
+          'พิมพ์ค้นหาสถานที่จริง หรือลากหมุดบนแผนที่เพื่อระบุตำแหน่งร้านของคุณ',
           style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
         ),
         const SizedBox(height: 16),
 
-        // Interactive Maps Card Simulation
-        Container(
-          width: double.infinity,
-          height: 190,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: const Color(0xFFE9F1F8),
-            border: Border.all(color: const Color(0xFFCCE4FF), width: 1.5),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4)),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Stylized Map Grid
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _MapGridPainter(),
-                ),
-              ),
-
-              // Center Marker Pin
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F2B5C),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6),
-                        ],
-                      ),
-                      child: Text(
-                        _shopNameController.text.trim().isNotEmpty
-                            ? _shopNameController.text.trim()
-                            : 'ตำแหน่งร้านของคุณ',
-                        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    const Icon(Icons.location_on, color: Color(0xFF0066FF), size: 42),
-                  ],
-                ),
-              ),
-
-              // GPS Coordinates Badge
-              Positioned(
-                bottom: 12,
-                left: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.92),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.my_location, size: 14, color: Color(0xFF0066FF)),
-                      const SizedBox(width: 6),
-                      Text(
-                        'พิกัด: $_latitude, $_longitude',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Button to trigger GPS location
-              Positioned(
-                top: 12,
-                right: 12,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF0066FF),
-                    elevation: 2,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  icon: _isLocating
-                      ? const SizedBox(height: 14, width: 14, child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Icon(Icons.gps_fixed, size: 16),
-                  label: Text(_isLocating ? 'กำลังดึง...' : 'ดึงพิกัด GPS', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                  onPressed: _isLocating ? null : _getCurrentLocation,
-                ),
-              ),
-            ],
-          ),
+        // Real Interactive Map Picker with Nominatim Search
+        RealMapPicker(
+          initialLat: _latitude,
+          initialLng: _longitude,
+          height: 270,
+          onLocationChanged: (lat, lng, address) {
+            setState(() {
+              _latitude = lat;
+              _longitude = lng;
+              if (address.isNotEmpty) {
+                _addressController.text = address;
+              }
+            });
+          },
         ),
 
         const SizedBox(height: 12),
@@ -608,17 +535,21 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // Quick City Preset Chips
         Row(
           children: [
-            const Text('เลือกย่านยอดนิยม: ', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+            const Text('เลือกย่านด่วน: ', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildCityChip('ขอนแก่น (ในเมือง)', 16.4322, 102.8236),
+                    _buildCityChip('ขอนแก่น (ในเมือง)', 16.4322, 102.8236, 'ถนนศรีจันทร์ ตำบลในเมือง อำเภอเมือง ขอนแก่น 40000'),
                     const SizedBox(width: 6),
-                    _buildCityChip('กรุงเทพ (สุขุมวิท)', 13.7367, 100.5608),
+                    _buildCityChip('กรุงเทพ (สุขุมวิท)', 13.7367, 100.5608, 'ถนนสุขุมวิท แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110'),
                     const SizedBox(width: 6),
-                    _buildCityChip('เชียงใหม่ (นิมมาน)', 18.7961, 98.9680),
+                    _buildCityChip('กรุงเทพ (สยาม)', 13.7462, 100.5347, 'ถนนพระราม 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพฯ 10330'),
+                    const SizedBox(width: 6),
+                    _buildCityChip('เชียงใหม่ (นิมมาน)', 18.7961, 98.9680, 'ถนนนิมมานเหมินท์ ตำบลสุเทพ อำเภอเมือง เชียงใหม่ 50200'),
+                    const SizedBox(width: 6),
+                    _buildCityChip('ภูเก็ต (ป่าตอง)', 7.8963, 98.2982, 'ถนนราษฎร์อุทิศ 200 ปี ตำบลป่าตอง อำเภอกะทู้ ภูเก็ต 83150'),
                   ],
                 ),
               ),
@@ -1268,7 +1199,7 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     );
   }
 
-  Widget _buildCityChip(String label, double lat, double lng) {
+  Widget _buildCityChip(String label, double lat, double lng, String address) {
     final isCurrent = (_latitude == lat && _longitude == lng);
     return ActionChip(
       label: Text(label, style: TextStyle(fontSize: 11, color: isCurrent ? Colors.white : const Color(0xFF0F2B5C))),
@@ -1278,34 +1209,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         setState(() {
           _latitude = lat;
           _longitude = lng;
+          _addressController.text = address;
         });
       },
     );
   }
-}
-
-// Custom Painter for Map simulation
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final roadPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 10
-      ..style = PaintingStyle.stroke;
-
-    final roadPaintSecondary = Paint()
-      ..color = const Color(0xFFD6E4FF)
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke;
-
-    // Draw grid roads
-    canvas.drawLine(Offset(0, size.height * 0.45), Offset(size.width, size.height * 0.45), roadPaint);
-    canvas.drawLine(Offset(size.width * 0.5, 0), Offset(size.width * 0.5, size.height), roadPaint);
-    canvas.drawLine(Offset(0, size.height * 0.75), Offset(size.width, size.height * 0.75), roadPaintSecondary);
-    canvas.drawLine(Offset(size.width * 0.2, 0), Offset(size.width * 0.2, size.height), roadPaintSecondary);
-    canvas.drawLine(Offset(size.width * 0.8, 0), Offset(size.width * 0.8, size.height), roadPaintSecondary);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

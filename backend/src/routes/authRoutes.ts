@@ -5,7 +5,9 @@ import {
   googleAuth,
   forgotPassword,
   resetPasswordWithOtp,
-  getMe
+  getMe,
+  updateProfile,
+  changePassword
 } from '../controllers/authController';
 import { authenticateToken } from '../middlewares/auth';
 
@@ -17,6 +19,8 @@ router.post('/google', googleAuth);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPasswordWithOtp);
 router.get('/me', authenticateToken, getMe);
+router.put('/profile', authenticateToken, updateProfile);
+router.put('/change-password', authenticateToken, changePassword);
 
 export default router;
 

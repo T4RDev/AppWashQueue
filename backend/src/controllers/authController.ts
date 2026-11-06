@@ -389,3 +389,64 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
+// อัปเดตข้อมูลส่วนตัว (ชื่อ-สกุล, เบอร์โทร)
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user!.id;
+    const { full_name, phone } = req.body;
+
+    if (!full_name && !phone) {
+      sendError(res, 'กรุณาระบุข้อมูลที่ต้องการแก้ไข', 400);
+      return;
+    }
+
+    const updates: string[] = [];
+    const values: any[] = [];
+    if (full_name) {
+      updates.push('full_name = ?');
+      values.push(full_name);
+    }
+    if (phone) {
+      updates.push('phone = ?');
+      values.push(phone);
+    }
+    values.push(userId);
+
+    await pool.execute(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, values);
+    sendSuccess(res, null, 'อัปเดตข้อมูลส่วนตัวเรียบร้อยแล้ว');
+  } catch (error) {
+    sendError(res, 'เกิดข้อผิดพลาดในการอัปเดตข้อมูล', 500, error);
+  }
+};
+
+// เปลี่ยนรหัสผ่านของบัญชี
+export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user!.id;
+    const { old_password, new_password } = req.body;
+
+    if (!old_password || !new_password) {
+      sendError(res, 'กรุณาระบุรหัสผ่านเดิมและรหัสผ่านใหม่', 400);
+      return;
+    }
+
+    const [users] = await pool.execute<RowDataPacket[]>('SELECT password_hash FROM users WHERE id = ?', [userId]);
+    if (users.length === 0) {
+      sendError(res, 'ไม่พบผู้ใช้', 404);
+      return;
+    }
+
+    const isMatch = await comparePassword(old_password, users[0].password_hash);
+    if (!isMatch) {
+      sendError(res, 'รหัสผ่านเดิมไม่ถูกต้อง', 400);
+      return;
+    }
+
+    const newHash = await hashPassword(new_password);
+    await pool.execute('UPDATE users SET password_hash = ? WHERE id = ?', [newHash, userId]);
+    sendSuccess(res, null, 'เปลี่ยนรหัสผ่านสำเร็จเรียบร้อยแล้ว');
+  } catch (error) {
+    sendError(res, 'เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน', 500, error);
+  }
+};
+

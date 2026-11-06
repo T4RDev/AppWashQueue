@@ -102,6 +102,54 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> updateProfile({String? fullName, String? phone}) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final response = await _apiService.put(
+      ApiConstants.updateProfile,
+      body: {
+        if (fullName != null) 'full_name': fullName,
+        if (phone != null) 'phone': phone,
+      },
+    );
+
+    _isLoading = false;
+    if (response.success) {
+      await fetchProfile();
+      return true;
+    } else {
+      _errorMessage = response.message;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final response = await _apiService.put(
+      ApiConstants.changePassword,
+      body: {
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      },
+    );
+
+    _isLoading = false;
+    if (response.success) {
+      notifyListeners();
+      return true;
+    } else {
+      _errorMessage = response.message;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     await _apiService.setToken(null);
     _currentUser = null;

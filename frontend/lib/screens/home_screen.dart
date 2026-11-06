@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/shop_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/wallet_provider.dart';
@@ -12,7 +13,8 @@ import 'owner/owner_main_navigation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isGuest;
-  const HomeScreen({super.key, this.isGuest = false});
+  final Function(int)? onSelectTab;
+  const HomeScreen({super.key, this.isGuest = false, this.onSelectTab});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -106,7 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (!widget.isGuest)
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()));
+                                  if (widget.onSelectTab != null) {
+                                    widget.onSelectTab!(2); // สลับไปแท็บกระเป๋าเงิน Wallet โดยตรง
+                                  } else {
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()));
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -119,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       const Icon(Icons.account_balance_wallet, color: Colors.white, size: 14),
                                       const SizedBox(width: 6),
                                       Text(
-                                        balance.toStringAsFixed(0),
+                                        NumberFormat('#,##0').format(balance),
                                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                                       ),
                                     ],

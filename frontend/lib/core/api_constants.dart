@@ -34,6 +34,8 @@ class ApiConstants {
   static const String forgotPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
   static const String me = '/auth/me';
+  static const String updateProfile = '/auth/profile';
+  static const String changePassword = '/auth/change-password';
 
   // Vehicles
   static const String vehicles = '/vehicles';

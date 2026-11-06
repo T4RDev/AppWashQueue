@@ -6,6 +6,7 @@ import 'home_screen.dart';
 import 'my_bookings_screen.dart';
 import 'wallet_screen.dart';
 import 'my_cars_screen.dart';
+import 'profile_screen.dart';
 import 'login_screen.dart';
 import 'owner/owner_main_navigation_screen.dart';
 import 'admin/admin_main_navigation_screen.dart';
@@ -37,10 +38,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     }
 
     final screens = [
-      HomeScreen(isGuest: isGuest),
+      HomeScreen(
+        isGuest: isGuest,
+        onSelectTab: (index) => setState(() => _currentIndex = index),
+      ),
       isGuest ? _buildGuestPrompt('กรุณาเข้าสู่ระบบเพื่อดูประวัติการจอง') : const MyBookingsScreen(),
       isGuest ? _buildGuestPrompt('กรุณาเข้าสู่ระบบเพื่อดูกระเป๋าเงินของคุณ') : const WalletScreen(),
       isGuest ? _buildGuestPrompt('กรุณาเข้าสู่ระบบเพื่อจัดการข้อมูลรถ') : const MyCarsScreen(),
+      isGuest
+          ? _buildGuestPrompt('กรุณาเข้าสู่ระบบเพื่อดูโปรไฟล์ของคุณ')
+          : ProfileScreen(
+              onSelectTab: (index) => setState(() => _currentIndex = index),
+            ),
     ];
 
     return Scaffold(
@@ -66,17 +75,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today_outlined),
             activeIcon: Icon(Icons.calendar_today),
-            label: 'การจองของฉัน',
+            label: 'การจอง',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet_outlined),
             activeIcon: Icon(Icons.account_balance_wallet),
-            label: 'กระเป๋าเงิน',
+            label: 'Wallet',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.directions_car_outlined),
             activeIcon: Icon(Icons.directions_car),
             label: 'รถของฉัน',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'โปรไฟล์',
           ),
         ],
       ),

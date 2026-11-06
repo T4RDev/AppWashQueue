@@ -230,20 +230,83 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
               ),
               const SizedBox(height: 12),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.badge, color: AppTheme.primaryColor),
-                title: const Text('สำเนาบัตรประชาชน (เข้ารหัสตาม PDPA)'),
-                subtitle: Text(_idCardFile != null ? 'เลือกแล้ว: ${_idCardFile!.name}' : 'ยังไม่ได้เลือกไฟล์'),
-                trailing: ElevatedButton(onPressed: _pickIdCard, child: const Text('เลือกไฟล์')),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.badge, color: AppTheme.primaryColor, size: 28),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('สำเนาบัตรประชาชน (PDPA)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                          const SizedBox(height: 2),
+                          Text(
+                            _idCardFile != null ? 'เลือกแล้ว: ${_idCardFile!.name}' : 'ยังไม่ได้เลือกไฟล์',
+                            style: TextStyle(fontSize: 12, color: _idCardFile != null ? AppTheme.success : AppTheme.textMuted),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(90, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                      onPressed: _pickIdCard,
+                      child: const Text('เลือกไฟล์'),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.photo_library, color: AppTheme.accentColor),
-                title: const Text('รูปถ่ายหน้าร้าน (ขั้นต่ำ 3 รูป)'),
-                subtitle: Text('เลือกแล้ว ${_shopImages.length} รูป'),
-                trailing: ElevatedButton(onPressed: _pickShopImages, child: const Text('เพิ่มรูป')),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.photo_library, color: AppTheme.accentColor, size: 28),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('รูปถ่ายหน้าร้าน (ขั้นต่ำ 3 รูป)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                          const SizedBox(height: 2),
+                          Text(
+                            _shopImages.isNotEmpty ? 'เลือกแล้ว ${_shopImages.length} รูป' : 'ยังไม่ได้เลือกรูป',
+                            style: TextStyle(fontSize: 12, color: _shopImages.length >= 3 ? AppTheme.success : AppTheme.textMuted),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.accentColor,
+                        minimumSize: const Size(90, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                      onPressed: _pickShopImages,
+                      child: const Text('เพิ่มรูป'),
+                    ),
+                  ],
+                ),
               ),
               const Divider(height: 32),
 

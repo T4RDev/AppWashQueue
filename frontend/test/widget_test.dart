@@ -6,7 +6,8 @@ void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(const WashQApp());
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+    await tester.pump(const Duration(milliseconds: 1300));
+    await tester.pump();
     expect(find.byType(WashQApp), findsOneWidget);
   });
 }

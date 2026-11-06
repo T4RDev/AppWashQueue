@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
 import 'welcome_screen.dart';
@@ -37,7 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+        MaterialPageRoute(
+          builder: (_) => const MainNavigationScreen(isGuest: true),
+        ),
       );
     }
   }
@@ -57,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -83,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               'แอปพลิเคชันจองคิวล้างรถอัจฉริยะ',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
@@ -98,4 +101,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

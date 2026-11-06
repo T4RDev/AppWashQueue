@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
+
 import '../providers/shop_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/wallet_provider.dart';
@@ -9,6 +13,8 @@ import '../widgets/shimmer_loading.dart';
 import 'shop_detail_screen.dart';
 import 'welcome_screen.dart';
 import 'wallet_screen.dart';
+import 'login_screen.dart';
+import 'register_screen.dart';
 import 'admin/admin_main_navigation_screen.dart';
 import 'owner/owner_main_navigation_screen.dart';
 
@@ -23,17 +29,119 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _searchController = TextEditingController();
-  String _selectedFilter = 'nearby'; // 'nearby', 'car', 'motorcycle', 'suv', 'top_rated'
+  String _selectedFilter =
+      'nearby'; // 'nearby', 'car', 'motorcycle', 'suv', 'top_rated'
+  double? _userLat;
+  double? _userLng;
+  String _currentAddress = 'กำลังค้นหาตำแหน่ง...';
+  bool _isLocating = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadShops();
+      _initUserLocation();
       if (!widget.isGuest) {
         Provider.of<WalletProvider>(context, listen: false).fetchMyWallet();
       }
     });
+  }
+
+  Future<void> _initUserLocation() async {
+    setState(() => _isLocating = true);
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _fallbackLocation();
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          _fallbackLocation();
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        _fallbackLocation();
+        return;
+      }
+
+      // Fast path: get last known position first (0ms)
+      final lastPos = await Geolocator.getLastKnownPosition();
+      if (lastPos != null && mounted) {
+        setState(() {
+          _userLat = lastPos.latitude;
+          _userLng = lastPos.longitude;
+        });
+        _updateAddressName(_userLat!, _userLng!);
+        _loadShops();
+      }
+
+      // Accurate path: get current position
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 4),
+      );
+      if (mounted) {
+        setState(() {
+          _userLat = pos.latitude;
+          _userLng = pos.longitude;
+          _isLocating = false;
+        });
+        _updateAddressName(_userLat!, _userLng!);
+        _loadShops();
+      }
+    } catch (_) {
+      if (mounted) _fallbackLocation();
+    }
+  }
+
+  void _fallbackLocation() {
+    if (!mounted) return;
+    setState(() {
+      _userLat ??= 16.4322;
+      _userLng ??= 102.8236;
+      _currentAddress = 'ในเมือง, ขอนแก่น';
+      _isLocating = false;
+    });
+    _loadShops();
+  }
+
+  Future<void> _updateAddressName(double lat, double lng) async {
+    try {
+      final url = Uri.parse(
+        'https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lng&format=json&addressdetails=1&accept-language=th',
+      );
+      final res = await http
+          .get(url, headers: {'User-Agent': 'WashQ-App/1.0'})
+          .timeout(const Duration(seconds: 3));
+      if (res.statusCode == 200 && mounted) {
+        final data = jsonDecode(res.body);
+        final addr = data['address'] as Map<String, dynamic>?;
+        if (addr != null) {
+          final subdistrict = addr['suburb'] ??
+              addr['village'] ??
+              addr['town'] ??
+              addr['city_district'] ??
+              addr['quarter'];
+          final city = addr['city'] ?? addr['state'] ?? addr['province'];
+          if (subdistrict != null && city != null) {
+            setState(() => _currentAddress = '$subdistrict, $city');
+            return;
+          } else if (city != null) {
+            setState(() => _currentAddress = '$city');
+            return;
+          }
+        }
+      }
+    } catch (_) {}
+    if (mounted && _currentAddress == 'กำลังค้นหาตำแหน่ง...') {
+      setState(() => _currentAddress = 'ในเมือง, ขอนแก่น');
+    }
   }
 
   void _loadShops() {
@@ -46,6 +154,9 @@ class _HomeScreenState extends State<HomeScreen> {
     shopProvider.searchShops(
       keyword: _searchController.text.trim(),
       vehicleType: vt,
+      userLat: _userLat,
+      userLng: _userLng,
+      minRating: _selectedFilter == 'top_rated' ? 4.0 : null,
     );
   }
 
@@ -78,7 +189,12 @@ class _HomeScreenState extends State<HomeScreen> {
               // Top Blue Header (Matches 2.1_Home.png)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(top: 48, left: 20, right: 20, bottom: 20),
+                padding: const EdgeInsets.only(
+                  top: 48,
+                  left: 20,
+                  right: 20,
+                  bottom: 20,
+                ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF0056D2), Color(0xFF0066FF)],
@@ -98,10 +214,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          children: const [
-                            Icon(Icons.location_on, color: Colors.white70, size: 16),
-                            SizedBox(width: 4),
-                            Text('ในเมือง, ขอนแก่น', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400)),
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.white70,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _currentAddress,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            if (_isLocating) ...[
+                              const SizedBox(width: 6),
+                              const SizedBox(
+                                width: 10,
+                                height: 10,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white70,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                         Row(
@@ -110,24 +250,42 @@ class _HomeScreenState extends State<HomeScreen> {
                               GestureDetector(
                                 onTap: () {
                                   if (widget.onSelectTab != null) {
-                                    widget.onSelectTab!(2); // สลับไปแท็บกระเป๋าเงิน Wallet โดยตรง
+                                    widget.onSelectTab!(
+                                      2,
+                                    ); // สลับไปแท็บกระเป๋าเงิน Wallet โดยตรง
                                   } else {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()));
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const WalletScreen(),
+                                      ),
+                                    );
                                   }
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.account_balance_wallet, color: Colors.white, size: 14),
+                                      const Icon(
+                                        Icons.account_balance_wallet,
+                                        color: Colors.white,
+                                        size: 14,
+                                      ),
                                       const SizedBox(width: 6),
                                       Text(
                                         NumberFormat('#,##0').format(balance),
-                                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -136,18 +294,36 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(width: 8),
                             if (authProvider.currentUser?.isAdmin == true)
                               IconButton(
-                                icon: const Icon(Icons.shield, color: Colors.white),
+                                icon: const Icon(
+                                  Icons.shield,
+                                  color: Colors.white,
+                                ),
                                 tooltip: 'แดชบอร์ดแอดมิน',
                                 onPressed: () {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdminMainNavigationScreen()));
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const AdminMainNavigationScreen(),
+                                    ),
+                                  );
                                 },
                               )
                             else if (authProvider.currentUser?.isOwner == true)
                               IconButton(
-                                icon: const Icon(Icons.storefront, color: Colors.white),
+                                icon: const Icon(
+                                  Icons.storefront,
+                                  color: Colors.white,
+                                ),
                                 tooltip: 'แดชบอร์ดเจ้าของร้าน',
                                 onPressed: () {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OwnerMainNavigationScreen()));
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const OwnerMainNavigationScreen(),
+                                    ),
+                                  );
                                 },
                               )
                             else
@@ -155,10 +331,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 34,
                                 height: 34,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.notifications_none, color: Colors.white, size: 18),
+                                child: const Icon(
+                                  Icons.notifications_none,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
                               ),
                           ],
                         ),
@@ -166,44 +346,137 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 6),
 
-                    // Greeting
-                    Text(
-                      widget.isGuest ? 'สวัสดี, ผู้เยี่ยมชม' : 'สวัสดี, ${user?.fullName ?? 'สมาชิก'}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.3,
+                    // Greeting or Guest Action Buttons
+                    if (widget.isGuest)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginScreen(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.login_rounded, size: 18),
+                                label: const Text(
+                                  'เข้าสู่ระบบ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF0066FF),
+                                  elevation: 0,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const RegisterScreen(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.person_add_alt_1_rounded,
+                                  size: 18,
+                                ),
+                                label: const Text(
+                                  'สมัครสมาชิก',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(
+                                    color: Colors.white,
+                                    width: 1.6,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Text(
+                        'สวัสดี, ${user?.fullName ?? 'สมาชิก'}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.3,
+                        ),
                       ),
-                    ),
                     const SizedBox(height: 16),
 
                     // Search Input with trailing filter button (Matches 2.1_Home.png)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 4)),
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
                         ],
                       ),
                       child: Row(
                         children: [
                           const SizedBox(width: 12),
-                          const Icon(Icons.search, color: Color(0xFF94A3B8), size: 20),
+                          const Icon(
+                            Icons.search,
+                            color: Color(0xFF94A3B8),
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
                               controller: _searchController,
                               decoration: const InputDecoration(
                                 hintText: 'ค้นหาชื่อร้าน หรือชื่อบริการ...',
-                                hintStyle: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                                hintStyle: TextStyle(
+                                  color: Color(0xFF94A3B8),
+                                  fontSize: 13,
+                                ),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(vertical: 10),
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
                               ),
                               onSubmitted: (_) => _loadShops(),
                             ),
@@ -217,7 +490,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: IconButton(
                               padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.grid_view_rounded, color: Colors.white, size: 18),
+                              icon: const Icon(
+                                Icons.grid_view_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                               onPressed: _loadShops,
                             ),
                           ),
@@ -257,7 +534,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: const Color(0xFFEAF0F8),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.02),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
                     ],
                   ),
                   child: Stack(
@@ -284,19 +565,36 @@ class _HomeScreenState extends State<HomeScreen> {
                         bottom: 12,
                         left: 14,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4),
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                blurRadius: 4,
+                              ),
                             ],
                           ),
                           child: Row(
-                            children: const [
-                              Icon(Icons.storefront, size: 14, color: AppTheme.primaryColor),
-                              SizedBox(width: 6),
-                              Text('12 ร้านใกล้คุณ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                            children: [
+                              const Icon(
+                                Icons.storefront,
+                                size: 14,
+                                color: AppTheme.primaryColor,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                '${shopProvider.shops.length} ร้านใกล้คุณ',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textPrimary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -312,13 +610,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             foregroundColor: Colors.white,
                             minimumSize: const Size(88, 34),
                             padding: const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             elevation: 0,
                           ),
                           onPressed: () {
                             // Map dialog or notice
                           },
-                          child: const Text('เปิดแผนที่', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          child: const Text(
+                            'เปิดแผนที่',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -328,12 +634,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Section Header: "ร้านแนะนำใกล้คุณ" (Matches 2.1_Home.png)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 12.0,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text('ร้านแนะนำใกล้คุณ', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
-                    Text('ดูทั้งหมด', style: TextStyle(fontSize: 13, color: AppTheme.primaryColor, fontWeight: FontWeight.w600)),
+                    Text(
+                      'ร้านแนะนำใกล้คุณ',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      'ดูทั้งหมด',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -354,9 +677,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   margin: const EdgeInsets.all(20),
                   padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: const Center(
-                    child: Text('ไม่พบร้านล้างรถตามเงื่อนไขที่ค้นหา', style: TextStyle(color: AppTheme.textSecondary)),
+                    child: Text(
+                      'ไม่พบร้านล้างรถตามเงื่อนไขที่ค้นหา',
+                      style: TextStyle(color: AppTheme.textSecondary),
+                    ),
                   ),
                 )
               else
@@ -389,7 +718,9 @@ class _HomeScreenState extends State<HomeScreen> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.2),
+          color: isSelected
+              ? Colors.white
+              : Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -411,7 +742,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: isPrimary ? const Color(0xFFD6E4FF) : Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 4),
         ],
       ),
       child: Row(
@@ -422,11 +753,16 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 8,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isPrimary ? AppTheme.primaryColor : const Color(0xFFFAAD14),
+              color: isPrimary
+                  ? AppTheme.primaryColor
+                  : const Color(0xFFFAAD14),
             ),
           ),
           const SizedBox(width: 4),
-          Text(price, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+          Text(
+            price,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+          ),
         ],
       ),
     );
@@ -459,7 +795,11 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 3)),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
           ],
         ),
         child: Row(
@@ -473,7 +813,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: color,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.directions_car_filled, color: Colors.white, size: 36),
+              child: const Icon(
+                Icons.directions_car_filled,
+                color: Colors.white,
+                size: 36,
+              ),
             ),
             const SizedBox(width: 14),
 
@@ -484,7 +828,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     shop.shopName,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.textPrimary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -492,11 +840,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded, size: 16, color: Color(0xFFFFB800)),
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 16,
+                        color: Color(0xFFFFB800),
+                      ),
                       const SizedBox(width: 3),
                       Text(
-                        '${shop.rating.toStringAsFixed(1)} (${shop.reviewCount}) • 1.2 กม.',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                        '${shop.rating.toStringAsFixed(1)} (${shop.reviewCount}) • ${shop.distanceKm != null ? '${shop.distanceKm!.toStringAsFixed(1)} กม.' : '1.2 กม.'}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -504,11 +859,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Row(
                     children: [
-                      const Icon(Icons.access_time, size: 13, color: AppTheme.textMuted),
+                      const Icon(
+                        Icons.access_time,
+                        size: 13,
+                        color: AppTheme.textMuted,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '$openTime – $closeTime',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textMuted,
+                        ),
                       ),
                     ],
                   ),
@@ -516,14 +878,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // Tag: • คิวว่างวันนี้ 6 คิว
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF6FFED),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Text(
                       '• คิวว่างวันนี้ 6 คิว',
-                      style: TextStyle(fontSize: 11, color: Color(0xFF389E0D), fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF389E0D),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -535,10 +904,17 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: const [
                 SizedBox(height: 46),
-                Text('เริ่มต้น', style: TextStyle(fontSize: 10, color: AppTheme.textMuted)),
+                Text(
+                  'เริ่มต้น',
+                  style: TextStyle(fontSize: 10, color: AppTheme.textMuted),
+                ),
                 Text(
                   '฿120',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
+                  ),
                 ),
               ],
             ),

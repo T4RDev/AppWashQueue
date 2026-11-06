@@ -6,6 +6,7 @@ import '../models/shop_model.dart';
 import '../core/app_theme.dart';
 import 'booking_screen.dart';
 import 'login_screen.dart';
+import 'register_screen.dart';
 
 class ShopDetailScreen extends StatefulWidget {
   final dynamic shop;
@@ -348,7 +349,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                 ),
                 onPressed: () {
                   if (!authProvider.isAuthenticated) {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+                    _showLoginPromptDialog(context);
                     return;
                   }
                   Navigator.push(
@@ -455,6 +456,65 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showLoginPromptDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        title: Row(
+          children: const [
+            Icon(Icons.lock_outline_rounded, color: AppTheme.primaryColor),
+            SizedBox(width: 8),
+            Text(
+              'เข้าสู่ระบบเพื่อจองคิว',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+          ],
+        ),
+        content: const Text(
+          'ผู้เยี่ยมชมสามารถดูรายละเอียดร้านและบริการได้ แต่ต้องเข้าสู่ระบบหรือสมัครสมาชิกก่อนเพื่อทำการจองคิวและรับบริการ',
+          style: TextStyle(fontSize: 14, color: AppTheme.textSecondary, height: 1.4),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ดูร้านต่อ', style: TextStyle(color: AppTheme.textMuted)),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RegisterScreen()),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppTheme.primaryColor),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('สมัครสมาชิก', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('เข้าสู่ระบบ', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
     );
   }

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
+
 import '../core/app_theme.dart';
 
 class RealMapPicker extends StatefulWidget {
@@ -61,7 +63,10 @@ class _RealMapPickerState extends State<RealMapPicker> {
 
   static double _latToTileY(double lat, int zoom) {
     final latRad = lat * math.pi / 180.0;
-    return (1.0 - math.log(math.tan(latRad) + 1.0 / math.cos(latRad)) / math.pi) / 2.0 * (1 << zoom);
+    return (1.0 -
+            math.log(math.tan(latRad) + 1.0 / math.cos(latRad)) / math.pi) /
+        2.0 *
+        (1 << zoom);
   }
 
   static double _tileXToLng(double x, int zoom) {
@@ -113,7 +118,9 @@ class _RealMapPickerState extends State<RealMapPicker> {
       );
       final res = await http.get(uri, headers: {'User-Agent': 'WashQApp/1.0'});
       if (res.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(utf8.decode(res.bodyBytes));
+        final Map<String, dynamic> data = jsonDecode(
+          utf8.decode(res.bodyBytes),
+        );
         final address = data['display_name'] as String? ?? '';
         if (address.isNotEmpty && mounted) {
           widget.onLocationChanged(_lat, _lng, address);
@@ -133,7 +140,8 @@ class _RealMapPickerState extends State<RealMapPicker> {
       if (perm == LocationPermission.denied) {
         perm = await Geolocator.requestPermission();
       }
-      if (perm == LocationPermission.denied || perm == LocationPermission.deniedForever) {
+      if (perm == LocationPermission.denied ||
+          perm == LocationPermission.deniedForever) {
         setState(() => _isLocating = false);
         return;
       }
@@ -195,7 +203,11 @@ class _RealMapPickerState extends State<RealMapPicker> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: const Color(0xFFD6E4FF), width: 1.2),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
             ],
           ),
           child: TextField(
@@ -203,24 +215,38 @@ class _RealMapPickerState extends State<RealMapPicker> {
             style: const TextStyle(fontSize: 13),
             decoration: InputDecoration(
               hintText: 'พิมพ์ค้นหาสถานที่จริง (เช่น เซ็นทรัล ขอนแก่น, สยาม, ถ.มิตรภาพ)...',
-              hintStyle: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF0066FF), size: 20),
+              hintStyle: const TextStyle(
+                fontSize: 12,
+                color: AppTheme.textMuted,
+              ),
+              prefixIcon: const Icon(
+                Icons.search,
+                color: Color(0xFF0066FF),
+                size: 20,
+              ),
               suffixIcon: _isSearching
                   ? const Padding(
                       padding: EdgeInsets.all(12.0),
-                      child: SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+                      child: SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     )
                   : _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _searchResults = []);
-                          },
-                        )
-                      : null,
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, size: 18),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _searchResults = []);
+                      },
+                    )
+                  : null,
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 12,
+              ),
             ),
             onChanged: (val) {
               _debounce?.cancel();
@@ -241,38 +267,52 @@ class _RealMapPickerState extends State<RealMapPicker> {
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: const Color(0xFFE2E8F0)),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 4)),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
               ],
             ),
             child: ListView.separated(
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemCount: _searchResults.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (ctx, i) {
                 final item = _searchResults[i];
-                return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  leading: const Icon(Icons.location_on, color: Color(0xFF0066FF), size: 18),
-                  title: Text(
-                    item['name'] as String,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    leading: const Icon(
+                      Icons.location_on,
+                      color: Color(0xFF0066FF),
+                      size: 18,
+                    ),
+                    title: Text(
+                      item['name'] as String,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () {
+                      final lat = item['lat'] as double;
+                      final lng = item['lng'] as double;
+                      final name = item['name'] as String;
+                      setState(() {
+                        _lat = lat;
+                        _lng = lng;
+                        _searchResults = [];
+                        _searchController.text = name.split(',')[0];
+                      });
+                      widget.onLocationChanged(lat, lng, name);
+                    },
                   ),
-                  onTap: () {
-                    final lat = item['lat'] as double;
-                    final lng = item['lng'] as double;
-                    final name = item['name'] as String;
-                    setState(() {
-                      _lat = lat;
-                      _lng = lng;
-                      _searchResults = [];
-                      _searchController.text = name.split(',')[0];
-                    });
-                    widget.onLocationChanged(lat, lng, name);
-                  },
                 );
               },
             ),
@@ -288,7 +328,11 @@ class _RealMapPickerState extends State<RealMapPicker> {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFFCCE4FF), width: 1.5),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4)),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
           child: ClipRRect(
@@ -302,7 +346,10 @@ class _RealMapPickerState extends State<RealMapPicker> {
                     onPanEnd: _onPanEnd,
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        return _buildTileGrid(constraints.maxWidth, constraints.maxHeight);
+                        return _buildTileGrid(
+                          constraints.maxWidth,
+                          constraints.maxHeight,
+                        );
                       },
                     ),
                   ),
@@ -314,17 +361,27 @@ class _RealMapPickerState extends State<RealMapPicker> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF0F2B5C),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 8),
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 8,
+                            ),
                           ],
                         ),
                         child: Text(
                           '${_lat.toStringAsFixed(4)}, ${_lng.toStringAsFixed(4)}',
-                          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -333,7 +390,11 @@ class _RealMapPickerState extends State<RealMapPicker> {
                         color: Color(0xFF0066FF),
                         size: 44,
                         shadows: [
-                          Shadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+                          Shadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
                         ],
                       ),
                     ],
@@ -345,9 +406,12 @@ class _RealMapPickerState extends State<RealMapPicker> {
                   top: 10,
                   left: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
+                      color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -355,7 +419,14 @@ class _RealMapPickerState extends State<RealMapPicker> {
                       children: const [
                         Icon(Icons.touch_app, size: 12, color: Colors.white),
                         SizedBox(width: 4),
-                        Text('ลากแผนที่เพื่อเลื่อนหมุด', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                        Text(
+                          'ลากแผนที่เพื่อเลื่อนหมุด',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -370,7 +441,9 @@ class _RealMapPickerState extends State<RealMapPicker> {
                     children: [
                       // GPS My Location
                       _buildMapCircleButton(
-                        icon: _isLocating ? Icons.hourglass_top : Icons.my_location,
+                        icon: _isLocating
+                            ? Icons.hourglass_top
+                            : Icons.my_location,
                         color: const Color(0xFF0066FF),
                         onTap: _isLocating ? null : _fetchGPS,
                         tooltip: 'ตำแหน่ง GPS ของฉัน',
@@ -404,14 +477,21 @@ class _RealMapPickerState extends State<RealMapPicker> {
                   bottom: 6,
                   left: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
                       '© OpenStreetMap & CartoDB',
-                      style: TextStyle(fontSize: 9, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
@@ -430,8 +510,10 @@ class _RealMapPickerState extends State<RealMapPicker> {
     final centerTileX = _lngToTileX(_lng, _zoom);
     final centerTileY = _latToTileY(_lat, _zoom);
 
-    final pixelCenterX = (centerTileX - centerTileX.floor()) * tileSize - _accumulatedDx;
-    final pixelCenterY = (centerTileY - centerTileY.floor()) * tileSize - _accumulatedDy;
+    final pixelCenterX =
+        (centerTileX - centerTileX.floor()) * tileSize - _accumulatedDx;
+    final pixelCenterY =
+        (centerTileY - centerTileY.floor()) * tileSize - _accumulatedDy;
 
     final startTileX = centerTileX.floor() - 1;
     final startTileY = centerTileY.floor() - 1;
@@ -450,7 +532,8 @@ class _RealMapPickerState extends State<RealMapPicker> {
         final left = (width / 2.0) - pixelCenterX + ((dx - 1) * tileSize);
         final top = (height / 2.0) - pixelCenterY + ((dy - 1) * tileSize);
 
-        final tileUrl = 'https://a.basemaps.cartocdn.com/rastertiles/voyager/$_zoom/$normalizedTx/$ty.png';
+        final tileUrl =
+            'https://a.basemaps.cartocdn.com/rastertiles/voyager/$_zoom/$normalizedTx/$ty.png';
 
         tiles.add(
           Positioned(
@@ -462,11 +545,15 @@ class _RealMapPickerState extends State<RealMapPicker> {
               tileUrl,
               fit: BoxFit.cover,
               gaplessPlayback: true,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return Container(
                   color: const Color(0xFFF1F5F9),
                   child: const Center(
-                    child: Icon(Icons.map_outlined, color: Color(0xFFCBD5E1), size: 30),
+                    child: Icon(
+                      Icons.map_outlined,
+                      color: Color(0xFFCBD5E1),
+                      size: 30,
+                    ),
                   ),
                 );
               },
@@ -502,4 +589,3 @@ class _RealMapPickerState extends State<RealMapPicker> {
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+
 import '../providers/auth_provider.dart';
 import '../providers/wallet_provider.dart';
 import '../providers/vehicle_provider.dart';
@@ -41,7 +42,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('แก้ไขข้อมูลส่วนตัว', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'แก้ไขข้อมูลส่วนตัว',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -66,12 +70,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('ยกเลิก', style: TextStyle(color: AppTheme.textSecondary)),
+            child: const Text(
+              'ยกเลิก',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(100, 42),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onPressed: () async {
               final newName = nameController.text.trim();
@@ -81,12 +90,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 return;
               }
               Navigator.pop(ctx);
-              final success = await authProvider.updateProfile(fullName: newName, phone: newPhone);
+              final success = await authProvider.updateProfile(
+                fullName: newName,
+                phone: newPhone,
+              );
               if (mounted) {
                 if (success) {
-                  AppSnackBar.showSuccess(context, 'บันทึกข้อมูลส่วนตัวเรียบร้อยแล้ว');
+                  AppSnackBar.showSuccess(
+                    context,
+                    'บันทึกข้อมูลส่วนตัวเรียบร้อยแล้ว',
+                  );
                 } else {
-                  AppSnackBar.showError(context, authProvider.errorMessage ?? 'ไม่สามารถอัปเดตข้อมูลได้');
+                  AppSnackBar.showError(
+                    context,
+                    authProvider.errorMessage ?? 'ไม่สามารถอัปเดตข้อมูลได้',
+                  );
                 }
               }
             },
@@ -107,7 +125,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('เปลี่ยนรหัสผ่าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'เปลี่ยนรหัสผ่าน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -142,16 +163,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('ยกเลิก', style: TextStyle(color: AppTheme.textSecondary)),
+            child: const Text(
+              'ยกเลิก',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(100, 42),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onPressed: () async {
               if (newPassController.text.length < 6) {
-                AppSnackBar.showError(context, 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+                AppSnackBar.showError(
+                  context,
+                  'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร',
+                );
                 return;
               }
               if (newPassController.text != confirmPassController.text) {
@@ -167,7 +196,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 if (success) {
                   AppSnackBar.showSuccess(context, 'เปลี่ยนรหัสผ่านสำเร็จ');
                 } else {
-                  AppSnackBar.showError(context, authProvider.errorMessage ?? 'รหัสผ่านเดิมไม่ถูกต้อง');
+                  AppSnackBar.showError(
+                    context,
+                    authProvider.errorMessage ?? 'รหัสผ่านเดิมไม่ถูกต้อง',
+                  );
                 }
               }
             },
@@ -183,23 +215,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('ยืนยันออกจากระบบ', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'ยืนยันออกจากระบบ',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         content: const Text('คุณต้องการออกจากระบบ ใช่หรือไม่?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('ยกเลิก', style: TextStyle(color: AppTheme.textSecondary)),
+            child: const Text(
+              'ยกเลิก',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFCF1322),
               foregroundColor: Colors.white,
               minimumSize: const Size(100, 42),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onPressed: () async {
               Navigator.pop(ctx);
-              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              final authProvider = Provider.of<AuthProvider>(
+                context,
+                listen: false,
+              );
               await authProvider.logout();
               if (mounted) {
                 Navigator.pushAndRemoveUntil(
@@ -225,8 +268,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final balance = walletProvider.wallet?.balance ?? 0.0;
     final carCount = vehicleProvider.vehicles.length;
 
-    final displayName = (user?.fullName.isNotEmpty == true) ? user!.fullName : 'ผู้ใช้งาน WashQ';
-    final displayEmail = (user?.email.isNotEmpty == true) ? user!.email : 'ยังไม่มีอีเมล';
+    final displayName = (user?.fullName.isNotEmpty == true)
+        ? user!.fullName
+        : 'ผู้ใช้งาน WashQ';
+    final displayEmail = (user?.email.isNotEmpty == true)
+        ? user!.email
+        : 'ยังไม่มีอีเมล';
     final displayPhone = (user?.phone.isNotEmpty == true) ? user!.phone : '-';
 
     return Scaffold(
@@ -237,7 +284,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Top Blue Profile Header (Matches WashQ Gradient Header)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 52, left: 24, right: 24, bottom: 28),
+              padding: const EdgeInsets.only(
+                top: 52,
+                left: 24,
+                right: 24,
+                bottom: 28,
+              ),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xFF0056D2), Color(0xFF0066FF)],
@@ -263,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
+                              color: Colors.black.withValues(alpha: 0.15),
                               blurRadius: 16,
                               offset: const Offset(0, 6),
                             ),
@@ -271,7 +323,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                            displayName.isNotEmpty
+                                ? displayName[0].toUpperCase()
+                                : 'U',
                             style: const TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
@@ -288,7 +342,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Color(0xFF0F2B5C),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.edit, size: 14, color: Colors.white),
+                          child: const Icon(
+                            Icons.edit,
+                            size: 14,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -308,7 +366,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     displayEmail,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withValues(alpha: 0.85),
                       fontSize: 13,
                     ),
                   ),
@@ -316,18 +374,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Role Badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.3)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       user?.isAdmin == true
                           ? 'ผู้ดูแลระบบ (Admin)'
                           : user?.isOwner == true
-                              ? 'เจ้าของร้านคาร์แคร์ (Owner)'
-                              : 'สมาชิกทั่วไป (Member)',
+                          ? 'เจ้าของร้านคาร์แคร์ (Owner)'
+                          : 'สมาชิกทั่วไป (Member)',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -361,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 14,
                               offset: const Offset(0, 4),
                             ),
@@ -378,16 +441,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     color: const Color(0xFFE6F7FF),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: const Icon(Icons.account_balance_wallet, color: Color(0xFF0066FF), size: 18),
+                                  child: const Icon(
+                                    Icons.account_balance_wallet,
+                                    color: Color(0xFF0066FF),
+                                    size: 18,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text('กระเป๋าเงิน', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                                const Text(
+                                  'กระเป๋าเงิน',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 10),
                             Text(
                               '฿${NumberFormat('#,##0').format(balance)}',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0F2B5C),
+                              ),
                             ),
                           ],
                         ),
@@ -411,7 +488,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 14,
                               offset: const Offset(0, 4),
                             ),
@@ -428,16 +505,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     color: const Color(0xFFFFF7E6),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: const Icon(Icons.directions_car, color: Color(0xFFFA8C16), size: 18),
+                                  child: const Icon(
+                                    Icons.directions_car,
+                                    color: Color(0xFFFA8C16),
+                                    size: 18,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text('รถของฉัน', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                                const Text(
+                                  'รถของฉัน',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 10),
                             Text(
                               '$carCount คัน',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0F2B5C),
+                              ),
                             ),
                           ],
                         ),
@@ -460,16 +551,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.only(left: 4, bottom: 8),
                     child: Text(
                       'บัญชีและความปลอดภัย',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ),
                   Container(
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -511,16 +607,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.only(left: 4, bottom: 8),
                     child: Text(
                       'การบริการและร้านค้า',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ),
                   Container(
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -548,7 +649,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const RegisterShopScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterShopScreen(),
+                              ),
                             );
                           },
                         ),
@@ -571,16 +674,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.only(left: 4, bottom: 8),
                     child: Text(
                       'ความช่วยเหลือและระบบ',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ),
                   Container(
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -597,13 +705,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 title: const Text('นโยบาย PDPA'),
                                 content: const Text(
                                   'ระบบ WashQ มีการเก็บรักษาข้อมูลของผู้ใช้อย่างปลอดภัยตามมาตรฐาน พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล ข้อมูลเบอร์โทรและการชำระเงินจะถูกเข้ารหัสเพื่อความปลอดภัยสูงสุด',
                                 ),
                                 actions: [
-                                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('เข้าใจแล้ว')),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text('เข้าใจแล้ว'),
+                                  ),
                                 ],
                               ),
                             );
@@ -673,29 +786,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
     required VoidCallback? onTap,
   }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Container(
-        padding: const EdgeInsets.all(9),
-        decoration: BoxDecoration(
-          color: iconColor.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(12),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(9),
+          decoration: BoxDecoration(
+            color: iconColor.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: iconColor, size: 20),
         ),
-        child: Icon(icon, color: iconColor, size: 20),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: AppTheme.textPrimary,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+        ),
+        trailing: onTap != null
+            ? const Icon(Icons.chevron_right, color: Color(0xFFBFBFBF), size: 20)
+            : null,
+        onTap: onTap,
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppTheme.textPrimary),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
-      ),
-      trailing: onTap != null
-          ? const Icon(Icons.chevron_right, color: Color(0xFFBFBFBF), size: 20)
-          : null,
-      onTap: onTap,
     );
   }
 }
-

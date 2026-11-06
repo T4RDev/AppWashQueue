@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -45,7 +46,9 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
 
       // 2. Fetch today's bookings
       final todayStr = DateTime.now().toIso8601String().split('T')[0];
-      final bookingsRes = await _api.get('${ApiConstants.ownerBookings}?booking_date=$todayStr');
+      final bookingsRes = await _api.get(
+        '${ApiConstants.ownerBookings}?booking_date=$todayStr',
+      );
       if (bookingsRes.success && bookingsRes.data != null) {
         _todayBookings = bookingsRes.data is List ? bookingsRes.data : [];
       }
@@ -83,7 +86,12 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
             children: [
               // Top Dark Blue Header (Matches 3.1_Owner_Dashboard.png)
               Container(
-                padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 28),
+                padding: const EdgeInsets.only(
+                  top: 50,
+                  left: 20,
+                  right: 20,
+                  bottom: 28,
+                ),
                 decoration: const BoxDecoration(
                   color: Color(0xFF103B7B),
                   borderRadius: BorderRadius.only(
@@ -102,7 +110,10 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                           children: [
                             const Text(
                               'แดชบอร์ดร้าน',
-                              style: TextStyle(color: Colors.white70, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
@@ -119,16 +130,21 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.bar_chart_rounded, color: Colors.white),
+                                icon: const Icon(
+                                  Icons.bar_chart_rounded,
+                                  color: Colors.white,
+                                ),
                                 tooltip: 'สถิติร้าน',
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const OwnerStatsScreen()),
+                                    MaterialPageRoute(
+                                      builder: (_) => const OwnerStatsScreen(),
+                                    ),
                                   );
                                 },
                               ),
@@ -138,11 +154,14 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.15),
+                                    color: Colors.white.withValues(alpha: 0.15),
                                     shape: BoxShape.circle,
                                   ),
                                   child: IconButton(
-                                    icon: const Icon(Icons.notifications_none, color: Colors.white),
+                                    icon: const Icon(
+                                      Icons.notifications_none,
+                                      color: Colors.white,
+                                    ),
                                     onPressed: () {},
                                   ),
                                 ),
@@ -157,10 +176,14 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                                     ),
                                     child: Text(
                                       '${_stats['waiting'] ?? 0}',
-                                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ],
@@ -172,11 +195,20 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                     // 3 Stat Cards in a row
                     Row(
                       children: [
-                        _buildStatBox('คิววันนี้', '${_stats['today_queue'] ?? 0}'),
+                        _buildStatBox(
+                          'คิววันนี้',
+                          '${_stats['today_queue'] ?? 0}',
+                        ),
                         const SizedBox(width: 10),
-                        _buildStatBox('รอเข้ารับบริการ', '${_stats['waiting'] ?? 0}'),
+                        _buildStatBox(
+                          'รอเข้ารับบริการ',
+                          '${_stats['waiting'] ?? 0}',
+                        ),
                         const SizedBox(width: 10),
-                        _buildStatBox('รายได้วันนี้', '฿${_stats['today_income'] ?? 0}'),
+                        _buildStatBox(
+                          'รายได้วันนี้',
+                          '฿${_stats['today_income'] ?? 0}',
+                        ),
                       ],
                     ),
                   ],
@@ -184,7 +216,10 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
               ),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -195,7 +230,11 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 3)),
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
                         ],
                       ),
                       child: Row(
@@ -206,18 +245,32 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                               color: const Color(0xFFFFF7E6),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFFD48806), size: 28),
+                            child: const Icon(
+                              Icons.account_balance_wallet_outlined,
+                              color: Color(0xFFD48806),
+                              size: 28,
+                            ),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('เครดิตร้านใน Wallet', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                                const Text(
+                                  'เครดิตร้านใน Wallet',
+                                  style: TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 13,
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
                                 Text(
                                   '${((_stats['wallet_balance'] ?? 0) as num).toStringAsFixed(0)} เครดิต',
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.textPrimary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -228,11 +281,19 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                               foregroundColor: AppTheme.primaryColor,
                               elevation: 0,
                               minimumSize: const Size(80, 36),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                             ),
-                            onPressed: () => widget.onNavigateTab?.call(3), // ไปแท็บ Wallet
-                            child: const Text('ถอนเงิน', style: TextStyle(fontWeight: FontWeight.w600)),
+                            onPressed: () =>
+                                widget.onNavigateTab?.call(3), // ไปแท็บ Wallet
+                            child: const Text(
+                              'ถอนเงิน',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ],
                       ),
@@ -245,7 +306,11 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                       children: [
                         Text(
                           'คิววันนี้ • ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year + 543}',
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
                         ),
                         TextButton(
                           onPressed: () => widget.onNavigateTab?.call(1),
@@ -257,7 +322,12 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
 
                     // Booking Queue Cards
                     if (_isLoading)
-                      const Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator()))
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
                     else if (_todayBookings.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(28),
@@ -268,9 +338,16 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                         child: Center(
                           child: Column(
                             children: const [
-                              Icon(Icons.event_available, size: 48, color: AppTheme.textMuted),
+                              Icon(
+                                Icons.event_available,
+                                size: 48,
+                                color: AppTheme.textMuted,
+                              ),
                               SizedBox(height: 8),
-                              Text('ยังไม่มีคิวจองในวันนี้', style: TextStyle(color: AppTheme.textSecondary)),
+                              Text(
+                                'ยังไม่มีคิวจองในวันนี้',
+                                style: TextStyle(color: AppTheme.textSecondary),
+                              ),
                             ],
                           ),
                         ),
@@ -292,9 +369,9 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.12),
+          color: Colors.white.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
         ),
         child: Column(
           children: [
@@ -307,7 +384,11 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
             const SizedBox(height: 6),
             Text(
               val,
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
               maxLines: 1,
             ),
           ],
@@ -363,7 +444,11 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -373,15 +458,31 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF0F5FF),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   children: [
-                    Text(startTime, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor, fontSize: 13)),
-                    Text('-$endTime', style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                    Text(
+                      startTime,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      '-$endTime',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppTheme.textMuted,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -392,25 +493,39 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                   children: [
                     Text(
                       '$plate • $vehicleType',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       serviceName,
-                      style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: statusBg,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   statusText,
-                  style: TextStyle(color: statusColor, fontSize: 12, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -428,11 +543,16 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(0, 42),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 0,
                     ),
                     onPressed: () => _updateStatus(bookingId, 'in_progress'),
-                    child: const Text('รับรถเข้าบริการ', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: const Text(
+                      'รับรถเข้าบริการ',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -443,11 +563,16 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                       backgroundColor: const Color(0xFFFFF2F0),
                       foregroundColor: const Color(0xFFCF1322),
                       minimumSize: const Size(0, 42),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 0,
                     ),
                     onPressed: () => _updateStatus(bookingId, 'no_show'),
-                    child: const Text('ไม่มาตามนัด', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: const Text(
+                      'ไม่มาตามนัด',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
               ],
@@ -458,15 +583,19 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                 backgroundColor: const Color(0xFF00B96B),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 44),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 0,
               ),
               onPressed: () => _updateStatus(bookingId, 'completed'),
-              child: const Text('บริการเสร็จสิ้น ✓', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              child: const Text(
+                'บริการเสร็จสิ้น ✓',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
             ),
         ],
       ),
     );
   }
 }
-

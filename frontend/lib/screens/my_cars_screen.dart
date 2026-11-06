@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/vehicle_provider.dart';
 import '../models/vehicle_model.dart';
 import '../core/app_theme.dart';
@@ -24,9 +25,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 
   void _showAddCarBottomSheet([VehicleModel? existingCar]) {
-    final plateController = TextEditingController(text: existingCar?.plateNumber ?? '');
-    final brandController = TextEditingController(text: existingCar?.brand ?? '');
-    final modelController = TextEditingController(text: existingCar?.model ?? '');
+    final plateController = TextEditingController(
+      text: existingCar?.plateNumber ?? '',
+    );
+    final brandController = TextEditingController(
+      text: existingCar?.brand ?? '',
+    );
+    final modelController = TextEditingController(
+      text: existingCar?.model ?? '',
+    );
     String selectedType = existingCar?.vehicleType ?? 'car';
 
     showModalBottomSheet(
@@ -54,25 +61,44 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        existingCar == null ? 'เพิ่มรถคันใหม่ 🚗' : 'แก้ไขข้อมูลรถ',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        existingCar == null
+                            ? 'เพิ่มรถคันใหม่ 🚗'
+                            : 'แก้ไขข้อมูลรถ',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(ctx)),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: plateController,
-                    decoration: const InputDecoration(labelText: 'ป้ายทะเบียน (เช่น กข 1234 ขอนแก่น)'),
+                    decoration: const InputDecoration(
+                      labelText: 'ป้ายทะเบียน (เช่น กข 1234 ขอนแก่น)',
+                    ),
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedType,
+                    initialValue: selectedType,
                     decoration: const InputDecoration(labelText: 'ประเภทรถ'),
                     items: const [
-                      DropdownMenuItem(value: 'car', child: Text('รถยนต์ (Sedan / Hatchback)')),
-                      DropdownMenuItem(value: 'suv', child: Text('รถ SUV / กระบะ')),
-                      DropdownMenuItem(value: 'motorcycle', child: Text('รถจักรยานยนต์')),
+                      DropdownMenuItem(
+                        value: 'car',
+                        child: Text('รถยนต์ (Sedan / Hatchback)'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'suv',
+                        child: Text('รถ SUV / กระบะ'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'motorcycle',
+                        child: Text('รถจักรยานยนต์'),
+                      ),
                     ],
                     onChanged: (val) {
                       if (val != null) setModalState(() => selectedType = val);
@@ -84,14 +110,18 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       Expanded(
                         child: TextField(
                           controller: brandController,
-                          decoration: const InputDecoration(labelText: 'ยี่ห้อ (เช่น Honda)'),
+                          decoration: const InputDecoration(
+                            labelText: 'ยี่ห้อ (เช่น Honda)',
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: modelController,
-                          decoration: const InputDecoration(labelText: 'รุ่น (เช่น Civic)'),
+                          decoration: const InputDecoration(
+                            labelText: 'รุ่น (เช่น Civic)',
+                          ),
                         ),
                       ),
                     ],
@@ -104,7 +134,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         return;
                       }
 
-                      final provider = Provider.of<VehicleProvider>(context, listen: false);
+                      final provider = Provider.of<VehicleProvider>(
+                        context,
+                        listen: false,
+                      );
                       Navigator.pop(ctx);
 
                       bool success;
@@ -112,24 +145,39 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         success = await provider.addVehicle(
                           plateNumber: plateController.text.trim(),
                           vehicleType: selectedType,
-                          brand: brandController.text.trim().isNotEmpty ? brandController.text.trim() : 'ทั่วไป',
-                          model: modelController.text.trim().isNotEmpty ? modelController.text.trim() : 'มาตรฐาน',
+                          brand: brandController.text.trim().isNotEmpty
+                              ? brandController.text.trim()
+                              : 'ทั่วไป',
+                          model: modelController.text.trim().isNotEmpty
+                              ? modelController.text.trim()
+                              : 'มาตรฐาน',
                         );
                       } else {
                         success = await provider.updateVehicle(
                           id: existingCar.id,
                           plateNumber: plateController.text.trim(),
                           vehicleType: selectedType,
-                          brand: brandController.text.trim().isNotEmpty ? brandController.text.trim() : 'ทั่วไป',
-                          model: modelController.text.trim().isNotEmpty ? modelController.text.trim() : 'มาตรฐาน',
+                          brand: brandController.text.trim().isNotEmpty
+                              ? brandController.text.trim()
+                              : 'ทั่วไป',
+                          model: modelController.text.trim().isNotEmpty
+                              ? modelController.text.trim()
+                              : 'มาตรฐาน',
                         );
                       }
 
                       if (mounted && success) {
-                        AppSnackBar.showSuccess(context, existingCar == null ? 'เพิ่มรถเรียบร้อยแล้ว' : 'แก้ไขข้อมูลรถเรียบร้อย');
+                        AppSnackBar.showSuccess(
+                          context,
+                          existingCar == null
+                              ? 'เพิ่มรถเรียบร้อยแล้ว'
+                              : 'แก้ไขข้อมูลรถเรียบร้อย',
+                        );
                       }
                     },
-                    child: Text(existingCar == null ? 'บันทึกข้อมูลรถ' : 'บันทึกการแก้ไข'),
+                    child: Text(
+                      existingCar == null ? 'บันทึกข้อมูลรถ' : 'บันทึกการแก้ไข',
+                    ),
                   ),
                 ],
               ),
@@ -146,7 +194,8 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     final allVehicles = vehicleProvider.vehicles;
 
     final filteredVehicles = allVehicles.where((v) {
-      if (_selectedFilter == 'car') return v.vehicleType == 'car' || v.vehicleType == 'suv';
+      if (_selectedFilter == 'car')
+        return v.vehicleType == 'car' || v.vehicleType == 'suv';
       if (_selectedFilter == 'motorcycle') return v.vehicleType == 'motorcycle';
       return true;
     }).toList();
@@ -158,7 +207,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
           onRefresh: () async => vehicleProvider.fetchMyVehicles(),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -171,12 +223,19 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       children: [
                         const Text(
                           'รถของฉัน',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           'จัดการรถที่ใช้จองคิว (${allVehicles.length} คัน)',
-                          style: const TextStyle(fontSize: 13, color: AppTheme.textMuted),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -188,7 +247,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.add, color: Colors.white, size: 24),
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                         onPressed: () => _showAddCarBottomSheet(),
                       ),
                     ),
@@ -214,20 +277,37 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 const SizedBox(height: 18),
 
                 if (vehicleProvider.isLoading && allVehicles.isEmpty)
-                  const Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator()))
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
                 else if (filteredVehicles.isEmpty)
                   Container(
                     padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Center(
                       child: Column(
                         children: [
-                          const Icon(Icons.directions_car_outlined, size: 54, color: AppTheme.textMuted),
+                          const Icon(
+                            Icons.directions_car_outlined,
+                            size: 54,
+                            color: AppTheme.textMuted,
+                          ),
                           const SizedBox(height: 12),
-                          const Text('ยังไม่มีข้อมูลรถที่บันทึกไว้', style: TextStyle(color: AppTheme.textSecondary)),
+                          const Text(
+                            'ยังไม่มีข้อมูลรถที่บันทึกไว้',
+                            style: TextStyle(color: AppTheme.textSecondary),
+                          ),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(minimumSize: const Size(140, 42)),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(140, 42),
+                            ),
                             onPressed: () => _showAddCarBottomSheet(),
                             icon: const Icon(Icons.add),
                             label: const Text('เพิ่มรถคันแรก'),
@@ -242,7 +322,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                   const SizedBox(height: 14),
 
                   // Remaining Car Cards
-                  ...filteredVehicles.skip(1).map((v) => _buildSecondaryCarCard(v)),
+                  ...filteredVehicles
+                      .skip(1)
+                      .map((v) => _buildSecondaryCarCard(v)),
 
                   const SizedBox(height: 14),
 
@@ -255,16 +337,28 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.5), width: 1.5, style: BorderStyle.solid),
+                        border: Border.all(
+                          color: AppTheme.primaryColor.withValues(alpha: 0.5),
+                          width: 1.5,
+                          style: BorderStyle.solid,
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Icon(Icons.add, color: AppTheme.primaryColor, size: 20),
+                          Icon(
+                            Icons.add,
+                            color: AppTheme.primaryColor,
+                            size: 20,
+                          ),
                           SizedBox(width: 8),
                           Text(
                             '+ เพิ่มรถคันใหม่',
-                            style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                            style: TextStyle(
+                              color: AppTheme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
@@ -290,7 +384,13 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             color: isSelected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected
-                ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 : null,
           ),
           alignment: Alignment.center,
@@ -318,7 +418,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: const Color(0xFF0F2B5C).withOpacity(0.35), blurRadius: 18, offset: const Offset(0, 8)),
+          BoxShadow(
+            color: const Color(0xFF0F2B5C).withValues(alpha: 0.35),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
         ],
       ),
       child: Column(
@@ -329,16 +433,30 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: const [
-                    Icon(Icons.star_rounded, color: Color(0xFFFFB800), size: 16),
+                    Icon(
+                      Icons.star_rounded,
+                      color: Color(0xFFFFB800),
+                      size: 16,
+                    ),
                     SizedBox(width: 4),
-                    Text('รถหลัก', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppTheme.textPrimary)),
+                    Text(
+                      'รถหลัก',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -348,12 +466,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
+                      color: Colors.white.withValues(alpha: 0.18),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.edit_outlined, color: Colors.white, size: 16),
+                      icon: const Icon(
+                        Icons.edit_outlined,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                       onPressed: () => _showAddCarBottomSheet(v),
                     ),
                   ),
@@ -362,12 +484,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
+                      color: Colors.white.withValues(alpha: 0.18),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.delete_outline, color: Colors.white, size: 16),
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                       onPressed: () => _confirmDeleteCar(v),
                     ),
                   ),
@@ -386,18 +512,34 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 children: [
                   Text(
                     v.plateNumber,
-                    style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
+                    ),
                   ),
                   const SizedBox(height: 2),
-                  const Text('ขอนแก่น', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                  const Text(
+                    'ขอนแก่น',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     '${v.brand} • ${v.model} • ${v.vehicleTypeThai}',
-                    style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
-              const Icon(Icons.directions_car_filled, color: Colors.white24, size: 76),
+              const Icon(
+                Icons.directions_car_filled,
+                color: Colors.white24,
+                size: 76,
+              ),
             ],
           ),
         ],
@@ -414,7 +556,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
@@ -423,10 +569,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isMotorcycle ? const Color(0xFFE8F3FF) : const Color(0xFFE8F3FF),
+              color: isMotorcycle
+                  ? const Color(0xFFE8F3FF)
+                  : const Color(0xFFE8F3FF),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(isMotorcycle ? Icons.two_wheeler : Icons.directions_car, color: AppTheme.primaryColor, size: 24),
+            child: Icon(
+              isMotorcycle ? Icons.two_wheeler : Icons.directions_car,
+              color: AppTheme.primaryColor,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -435,17 +587,42 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               children: [
                 Row(
                   children: [
-                    Text(v.plateNumber, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(
+                      v.plateNumber,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
-                      child: Text(v.vehicleTypeThai, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        v.vehicleTypeThai,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: AppTheme.textSecondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 3),
-                Text('${v.brand} • ${v.model}', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                Text(
+                  '${v.brand} • ${v.model}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textMuted,
+                  ),
+                ),
               ],
             ),
           ),
@@ -454,7 +631,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             onPressed: () => _showAddCarBottomSheet(v),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+            icon: const Icon(
+              Icons.delete_outline,
+              color: Colors.redAccent,
+              size: 20,
+            ),
             onPressed: () => _confirmDeleteCar(v),
           ),
         ],
@@ -469,9 +650,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
         title: const Text('ยืนยันการลบ'),
         content: Text('คุณต้องการลบรถทะเบียน ${v.plateNumber} ใช่หรือไม่?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ยกเลิก')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ยกเลิก'),
+          ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error, minimumSize: const Size(90, 38)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.error,
+              minimumSize: const Size(90, 38),
+            ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('ลบ'),
           ),

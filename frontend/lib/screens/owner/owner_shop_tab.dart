@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -55,8 +56,12 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
         _phoneCtrl.text = d['phone'] ?? '';
         _descCtrl.text = d['description'] ?? '';
         _addressCtrl.text = d['address'] ?? '';
-        _lat = double.tryParse(d['latitude']?.toString() ?? '13.736717') ?? 13.736717;
-        _lng = double.tryParse(d['longitude']?.toString() ?? '100.560787') ?? 100.560787;
+        _lat =
+            double.tryParse(d['latitude']?.toString() ?? '13.736717') ??
+            13.736717;
+        _lng =
+            double.tryParse(d['longitude']?.toString() ?? '100.560787') ??
+            100.560787;
         _bankName = d['bank_name'] ?? 'กสิกรไทย';
         _bankAccNum = d['bank_account_number'] ?? '123-4-56789-0';
         _bankAccName = d['bank_account_name'] ?? 'สมชาย คาร์แคร์';
@@ -104,7 +109,10 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('แก้ไขข้อมูลร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'แก้ไขข้อมูลร้าน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -138,16 +146,26 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(Icons.storefront, color: Colors.white, size: 36),
+                          child: const Icon(
+                            Icons.storefront,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            _nameCtrl.text.isEmpty ? 'ชื่อร้านคาร์แคร์' : _nameCtrl.text,
-                            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                            _nameCtrl.text.isEmpty
+                                ? 'ชื่อร้านคาร์แคร์'
+                                : _nameCtrl.text,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -185,7 +203,8 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
                     maxLines: 2,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.description_outlined),
-                      hintText: 'ล้างอัดฉีด ดูดฝุ่น เคลือบสี มีห้องรับรอง Wi-Fi',
+                      hintText:
+                          'ล้างอัดฉีด ดูดฝุ่น เคลือบสี มีห้องรับรอง Wi-Fi',
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -203,7 +222,10 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
 
                   _buildInputLabel('ตำแหน่งและพิกัดร้าน'),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -211,17 +233,27 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.my_location, size: 20, color: AppTheme.primaryColor),
+                        const Icon(
+                          Icons.my_location,
+                          size: 20,
+                          color: AppTheme.primaryColor,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             '${_lat.toStringAsFixed(4)}, ${_lng.toStringAsFixed(4)}',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         TextButton(
                           onPressed: () {
-                            AppSnackBar.showSuccess(context, 'พิกัด GPS ได้รับการอัปเดตแล้ว');
+                            AppSnackBar.showSuccess(
+                              context,
+                              'พิกัด GPS ได้รับการอัปเดตแล้ว',
+                            );
                           },
                           child: const Text('ปักหมุดใหม่'),
                         ),
@@ -240,15 +272,31 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.account_balance, color: Color(0xFFD48806)),
+                        const Icon(
+                          Icons.account_balance,
+                          color: Color(0xFFD48806),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('บัญชีธนาคารรับเงิน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF873800))),
+                              const Text(
+                                'บัญชีธนาคารรับเงิน',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: Color(0xFF873800),
+                                ),
+                              ),
                               const SizedBox(height: 2),
-                              Text('$_bankName • $_bankAccNum • $_bankAccName', style: const TextStyle(fontSize: 12, color: Color(0xFF873800))),
+                              Text(
+                                '$_bankName • $_bankAccNum • $_bankAccName',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF873800),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -262,24 +310,41 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                       elevation: 2,
                     ),
                     onPressed: _isSaving ? null : _handleSave,
                     child: _isSaving
-                        ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text('บันทึกการเปลี่ยนแปลง', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'บันทึกการเปลี่ยนแปลง',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 16),
 
                   OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.error,
                     side: const BorderSide(color: AppTheme.error),
-                  ).let((style) => OutlinedButton(
-                        style: style,
-                        onPressed: _handleLogout,
-                        child: const Text('ออกจากระบบ'),
-                      )),
+                  ).let(
+                    (style) => OutlinedButton(
+                      style: style,
+                      onPressed: _handleLogout,
+                      child: const Text('ออกจากระบบ'),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -289,7 +354,14 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
   Widget _buildInputLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppTheme.textPrimary,
+        ),
+      ),
     );
   }
 }
@@ -297,4 +369,3 @@ class _OwnerShopTabState extends State<OwnerShopTab> {
 extension LetExtension<T> on T {
   R let<R>(R Function(T it) block) => block(this);
 }
-

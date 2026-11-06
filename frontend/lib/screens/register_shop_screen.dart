@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:geolocator/geolocator.dart';
+
 import '../core/api_service.dart';
 import '../core/api_constants.dart';
 import '../core/app_theme.dart';
@@ -31,14 +32,32 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
   bool _acceptsSuv = true;
 
   // Step 2: ที่ตั้ง & เวลา (อิงจาก Maps)
-  final _addressController = TextEditingController(text: '123/45 ถนนมิตรภาพ ตำบลในเมือง อำเภอเมือง ขอนแก่น 40000');
+  final _addressController = TextEditingController(
+    text: '123/45 ถนนมิตรภาพ ตำบลในเมือง อำเภอเมือง ขอนแก่น 40000',
+  );
   double _latitude = 16.4322;
   double _longitude = 102.8236;
   bool _isLocating = false;
   final _openTimeController = TextEditingController(text: '08:00');
   final _closeTimeController = TextEditingController(text: '18:00');
-  final List<String> _operatingDays = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
-  final Set<String> _selectedDays = {'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'};
+  final List<String> _operatingDays = [
+    'จันทร์',
+    'อังคาร',
+    'พุธ',
+    'พฤหัสบดี',
+    'ศุกร์',
+    'เสาร์',
+    'อาทิตย์',
+  ];
+  final Set<String> _selectedDays = {
+    'จันทร์',
+    'อังคาร',
+    'พุธ',
+    'พฤหัสบดี',
+    'ศุกร์',
+    'เสาร์',
+    'อาทิตย์',
+  };
 
   // Step 3: บัญชี & เอกสาร
   final _emailController = TextEditingController();
@@ -106,14 +125,19 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          if (mounted) AppSnackBar.showError(context, 'กรุณาอนุญาตการเข้าถึงพิกัด GPS');
+          if (mounted)
+            AppSnackBar.showError(context, 'กรุณาอนุญาตการเข้าถึงพิกัด GPS');
           setState(() => _isLocating = false);
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        if (mounted) AppSnackBar.showError(context, 'สิทธิ์การเข้าถึงตำแหน่งถูกปฏิเสธถาวร กรุณาเปิดในตั้งค่า');
+        if (mounted)
+          AppSnackBar.showError(
+            context,
+            'สิทธิ์การเข้าถึงตำแหน่งถูกปฏิเสธถาวร กรุณาเปิดในตั้งค่า',
+          );
         setState(() => _isLocating = false);
         return;
       }
@@ -130,12 +154,18 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       });
 
       if (mounted) {
-        AppSnackBar.showSuccess(context, 'ดึงพิกัดจาก GPS สำเร็จ: $_latitude, $_longitude');
+        AppSnackBar.showSuccess(
+          context,
+          'ดึงพิกัดจาก GPS สำเร็จ: $_latitude, $_longitude',
+        );
       }
     } catch (e) {
       setState(() => _isLocating = false);
       if (mounted) {
-        AppSnackBar.showError(context, 'ไม่สามารถดึงพิกัด GPS ได้ ใช้พิกัดจำลองอัตโนมัติ');
+        AppSnackBar.showError(
+          context,
+          'ไม่สามารถดึงพิกัด GPS ได้ ใช้พิกัดจำลองอัตโนมัติ',
+        );
       }
     }
   }
@@ -165,7 +195,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     final picked = await _picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
       setState(() => _idCardFile = picked);
-      if (mounted) AppSnackBar.showSuccess(context, 'อัปโหลดสำเนาบัตรประชาชนเรียบร้อยแล้ว');
+      if (mounted)
+        AppSnackBar.showSuccess(
+          context,
+          'อัปโหลดสำเนาบัตรประชาชนเรียบร้อยแล้ว',
+        );
     }
   }
 
@@ -212,12 +246,16 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
   }
 
   Future<void> _handleSubmit() async {
-    if (_emailController.text.trim().isEmpty || !_emailController.text.contains('@')) {
+    if (_emailController.text.trim().isEmpty ||
+        !_emailController.text.contains('@')) {
       AppSnackBar.showError(context, 'กรุณากรอกอีเมลร้านค้าให้ถูกต้อง');
       return;
     }
     if (_passwordController.text.length < 6) {
-      AppSnackBar.showError(context, 'รหัสผ่านร้านค้าต้องมีอย่างน้อย 6 ตัวอักษร');
+      AppSnackBar.showError(
+        context,
+        'รหัสผ่านร้านค้าต้องมีอย่างน้อย 6 ตัวอักษร',
+      );
       return;
     }
     if (_bankAccNumController.text.trim().isEmpty) {
@@ -229,11 +267,17 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       return;
     }
     if (_idCardFile == null) {
-      AppSnackBar.showError(context, 'กรุณาอัปโหลดสำเนาบัตรประชาชนเพื่อยืนยันตัวตน (PDPA)');
+      AppSnackBar.showError(
+        context,
+        'กรุณาอัปโหลดสำเนาบัตรประชาชนเพื่อยืนยันตัวตน (PDPA)',
+      );
       return;
     }
     if (_shopImages.length < 3) {
-      AppSnackBar.showError(context, 'กรุณาอัปโหลดรูปถ่ายหน้าร้านอย่างน้อย 3 รูป');
+      AppSnackBar.showError(
+        context,
+        'กรุณาอัปโหลดรูปถ่ายหน้าร้านอย่างน้อย 3 รูป',
+      );
       return;
     }
 
@@ -243,24 +287,33 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       final List<http.MultipartFile> files = [];
 
       final idBytes = await _idCardFile!.readAsBytes();
-      final idExt = _idCardFile!.name.contains('.') ? _idCardFile!.name.split('.').last.toLowerCase() : 'png';
-      files.add(http.MultipartFile.fromBytes(
-        'id_card',
-        idBytes,
-        filename: 'id_card_${DateTime.now().millisecondsSinceEpoch}.$idExt',
-        contentType: _getMediaType(idExt),
-      ));
+      final idExt = _idCardFile!.name.contains('.')
+          ? _idCardFile!.name.split('.').last.toLowerCase()
+          : 'png';
+      files.add(
+        http.MultipartFile.fromBytes(
+          'id_card',
+          idBytes,
+          filename: 'id_card_${DateTime.now().millisecondsSinceEpoch}.$idExt',
+          contentType: _getMediaType(idExt),
+        ),
+      );
 
       for (int i = 0; i < _shopImages.length; i++) {
         final img = _shopImages[i];
         final imgBytes = await img.readAsBytes();
-        final imgExt = img.name.contains('.') ? img.name.split('.').last.toLowerCase() : 'jpg';
-        files.add(http.MultipartFile.fromBytes(
-          'shop_images',
-          imgBytes,
-          filename: 'shop_${i + 1}_${DateTime.now().millisecondsSinceEpoch}.$imgExt',
-          contentType: _getMediaType(imgExt),
-        ));
+        final imgExt = img.name.contains('.')
+            ? img.name.split('.').last.toLowerCase()
+            : 'jpg';
+        files.add(
+          http.MultipartFile.fromBytes(
+            'shop_images',
+            imgBytes,
+            filename:
+                'shop_${i + 1}_${DateTime.now().millisecondsSinceEpoch}.$imgExt',
+            contentType: _getMediaType(imgExt),
+          ),
+        );
       }
 
       final fields = {
@@ -269,7 +322,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         'shop_name': _shopNameController.text.trim(),
         'phone': _phoneController.text.trim(),
         'address': _addressController.text.trim(),
-        'description': _descController.text.trim().isEmpty ? 'ศูนย์บริการล้างรถและคาร์แคร์ครบวงจร' : _descController.text.trim(),
+        'description': _descController.text.trim().isEmpty
+            ? 'ศูนย์บริการล้างรถและคาร์แคร์ครบวงจร'
+            : _descController.text.trim(),
         'latitude': _latitude.toString(),
         'longitude': _longitude.toString(),
         'open_time': '${_openTimeController.text.trim()}:00',
@@ -320,11 +375,18 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                ),
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, size: 16, color: Color(0xFF0F2B5C)),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                size: 16,
+                color: Color(0xFF0F2B5C),
+              ),
               onPressed: () {
                 if (_currentStep > 1 && _currentStep < 4) {
                   setState(() => _currentStep--);
@@ -387,7 +449,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
       ),
       child: Row(
@@ -416,7 +482,8 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                           boxShadow: isCurrent
                               ? [
                                   BoxShadow(
-                                    color: const Color(0xFF0066FF).withOpacity(0.35),
+                                    color: const Color(0xFF0066FF)
+                                        .withValues(alpha: 0.35),
                                     blurRadius: 8,
                                     offset: const Offset(0, 3),
                                   ),
@@ -425,11 +492,17 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                         ),
                         child: Center(
                           child: isCompleted
-                              ? const Icon(Icons.check, color: Colors.white, size: 18)
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 18,
+                                )
                               : Text(
                                   '$stepNum',
                                   style: TextStyle(
-                                    color: isCurrent ? Colors.white : const Color(0xFF64748B),
+                                    color: isCurrent
+                                        ? Colors.white
+                                        : const Color(0xFF64748B),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                   ),
@@ -442,12 +515,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: isCurrent
+                              ? FontWeight.bold
+                              : FontWeight.w500,
                           color: isCurrent
                               ? const Color(0xFF0066FF)
                               : isCompleted
-                                  ? const Color(0xFF0F2B5C)
-                                  : const Color(0xFF94A3B8),
+                              ? const Color(0xFF0F2B5C)
+                              : const Color(0xFF94A3B8),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -459,7 +534,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                   Container(
                     width: 18,
                     height: 2,
-                    color: _currentStep > stepNum ? const Color(0xFF0066FF) : const Color(0xFFE2E8F0),
+                    color: _currentStep > stepNum
+                        ? const Color(0xFF0066FF)
+                        : const Color(0xFFE2E8F0),
                   ),
               ],
             ),
@@ -476,7 +553,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       children: [
         const Text(
           'ข้อมูลร้านคาร์แคร์ 🏪',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 4),
         const Text(
@@ -514,16 +595,32 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // ประเภทยานพาหนะที่รับ
         const Text(
           'ประเภทยานพาหนะที่ให้บริการ',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 10),
         Row(
           children: [
-            _buildVehicleChip('🚗 รถยนต์', _acceptsCar, () => setState(() => _acceptsCar = !_acceptsCar)),
+            _buildVehicleChip(
+              '🚗 รถยนต์',
+              _acceptsCar,
+              () => setState(() => _acceptsCar = !_acceptsCar),
+            ),
             const SizedBox(width: 8),
-            _buildVehicleChip('🏍️ มอเตอร์ไซค์', _acceptsMotorcycle, () => setState(() => _acceptsMotorcycle = !_acceptsMotorcycle)),
+            _buildVehicleChip(
+              '🏍️ มอเตอร์ไซค์',
+              _acceptsMotorcycle,
+              () => setState(() => _acceptsMotorcycle = !_acceptsMotorcycle),
+            ),
             const SizedBox(width: 8),
-            _buildVehicleChip('🚙 รถ SUV', _acceptsSuv, () => setState(() => _acceptsSuv = !_acceptsSuv)),
+            _buildVehicleChip(
+              '🚙 รถ SUV',
+              _acceptsSuv,
+              () => setState(() => _acceptsSuv = !_acceptsSuv),
+            ),
           ],
         ),
 
@@ -534,13 +631,18 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
             backgroundColor: const Color(0xFF0066FF),
             foregroundColor: Colors.white,
             minimumSize: const Size(double.infinity, 52),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
           onPressed: _goToStep2,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Text('ถัดไป (ตั้งค่าพิกัด & เวลา)', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(
+                'ถัดไป (ตั้งค่าพิกัด & เวลา)',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
               SizedBox(width: 8),
               Icon(Icons.arrow_forward, size: 18),
             ],
@@ -557,7 +659,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
       children: [
         const Text(
           'ที่ตั้งร้านค้า (อิงจาก Maps) 📍',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 4),
         const Text(
@@ -587,21 +693,49 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // Quick City Preset Chips
         Row(
           children: [
-            const Text('เลือกย่านด่วน: ', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+            const Text(
+              'เลือกย่านด่วน: ',
+              style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildCityChip('ขอนแก่น (ในเมือง)', 16.4322, 102.8236, 'ถนนศรีจันทร์ ตำบลในเมือง อำเภอเมือง ขอนแก่น 40000'),
+                    _buildCityChip(
+                      'ขอนแก่น (ในเมือง)',
+                      16.4322,
+                      102.8236,
+                      'ถนนศรีจันทร์ ตำบลในเมือง อำเภอเมือง ขอนแก่น 40000',
+                    ),
                     const SizedBox(width: 6),
-                    _buildCityChip('กรุงเทพ (สุขุมวิท)', 13.7367, 100.5608, 'ถนนสุขุมวิท แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110'),
+                    _buildCityChip(
+                      'กรุงเทพ (สุขุมวิท)',
+                      13.7367,
+                      100.5608,
+                      'ถนนสุขุมวิท แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+                    ),
                     const SizedBox(width: 6),
-                    _buildCityChip('กรุงเทพ (สยาม)', 13.7462, 100.5347, 'ถนนพระราม 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพฯ 10330'),
+                    _buildCityChip(
+                      'กรุงเทพ (สยาม)',
+                      13.7462,
+                      100.5347,
+                      'ถนนพระราม 1 แขวงปทุมวัน เขตปทุมวัน กรุงเทพฯ 10330',
+                    ),
                     const SizedBox(width: 6),
-                    _buildCityChip('เชียงใหม่ (นิมมาน)', 18.7961, 98.9680, 'ถนนนิมมานเหมินท์ ตำบลสุเทพ อำเภอเมือง เชียงใหม่ 50200'),
+                    _buildCityChip(
+                      'เชียงใหม่ (นิมมาน)',
+                      18.7961,
+                      98.9680,
+                      'ถนนนิมมานเหมินท์ ตำบลสุเทพ อำเภอเมือง เชียงใหม่ 50200',
+                    ),
                     const SizedBox(width: 6),
-                    _buildCityChip('ภูเก็ต (ป่าตอง)', 7.8963, 98.2982, 'ถนนราษฎร์อุทิศ 200 ปี ตำบลป่าตอง อำเภอกะทู้ ภูเก็ต 83150'),
+                    _buildCityChip(
+                      'ภูเก็ต (ป่าตอง)',
+                      7.8963,
+                      98.2982,
+                      'ถนนราษฎร์อุทิศ 200 ปี ตำบลป่าตอง อำเภอกะทู้ ภูเก็ต 83150',
+                    ),
                   ],
                 ),
               ),
@@ -624,7 +758,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // เวลาทำการ
         const Text(
           'เวลาทำการของร้าน 🕒',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 10),
         Row(
@@ -662,7 +800,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // วันทำการ
         const Text(
           'วันเปิดให้บริการ',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -671,12 +813,20 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
           children: _operatingDays.map((day) {
             final isSelected = _selectedDays.contains(day);
             return FilterChip(
-              label: Text(day, style: TextStyle(fontSize: 12, color: isSelected ? Colors.white : AppTheme.textPrimary)),
+              label: Text(
+                day,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isSelected ? Colors.white : AppTheme.textPrimary,
+                ),
+              ),
               selected: isSelected,
               selectedColor: const Color(0xFF0066FF),
               checkmarkColor: Colors.white,
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               onSelected: (val) {
                 setState(() {
                   if (val) {
@@ -699,10 +849,19 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 52),
                   side: const BorderSide(color: Color(0xFF0066FF)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 onPressed: () => setState(() => _currentStep = 1),
-                child: const Text('ย้อนกลับ', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0066FF))),
+                child: const Text(
+                  'ย้อนกลับ',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0066FF),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -713,13 +872,21 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                   backgroundColor: const Color(0xFF0066FF),
                   foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 52),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 onPressed: _goToStep3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('ถัดไป (บัญชี & เอกสาร)', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    Text(
+                      'ถัดไป (บัญชี & เอกสาร)',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(width: 6),
                     Icon(Icons.arrow_forward, size: 18),
                   ],
@@ -740,7 +907,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // 1. บัญชีเข้าสู่ระบบของร้าน
         const Text(
           'บัญชีเข้าสู่ระบบของร้าน',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -753,9 +924,22 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                 children: [
                   Row(
                     children: const [
-                      Text('อีเมลร้าน', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+                      Text(
+                        'อีเมลร้าน',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
                       SizedBox(width: 4),
-                      Text('* ห้ามใช้ซ้ำ', style: TextStyle(fontSize: 11, color: Color(0xFFCF1322))),
+                      Text(
+                        '* ห้ามใช้ซ้ำ',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFFCF1322),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 6),
@@ -766,7 +950,10 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       hintText: 'owner@sadaisai.com',
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -786,7 +973,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('รหัสผ่าน', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+                  const Text(
+                    'รหัสผ่าน',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   TextFormField(
                     controller: _passwordController,
@@ -795,7 +989,10 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       hintText: '••••••••',
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -817,7 +1014,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // 2. บัญชีธนาคารสำหรับรับเงิน
         const Text(
           'บัญชีธนาคารสำหรับรับเงิน',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -828,7 +1029,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('ธนาคาร', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+                  const Text(
+                    'ธนาคาร',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -841,8 +1049,21 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       child: DropdownButton<String>(
                         value: _selectedBank,
                         isExpanded: true,
-                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF0066FF)),
-                        items: _banks.map((b) => DropdownMenuItem(value: b, child: Text(b, style: const TextStyle(fontSize: 13)))).toList(),
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Color(0xFF0066FF),
+                        ),
+                        items: _banks
+                            .map(
+                              (b) => DropdownMenuItem(
+                                value: b,
+                                child: Text(
+                                  b,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ),
+                            )
+                            .toList(),
                         onChanged: (val) {
                           if (val != null) setState(() => _selectedBank = val);
                         },
@@ -858,7 +1079,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('เลขบัญชี', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+                  const Text(
+                    'เลขบัญชี',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   TextFormField(
                     controller: _bankAccNumController,
@@ -867,7 +1095,10 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       hintText: '123-4-56789-0',
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -889,7 +1120,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('ชื่อบัญชี', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+            const Text(
+              'ชื่อบัญชี',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textSecondary,
+              ),
+            ),
             const SizedBox(height: 6),
             TextFormField(
               controller: _bankAccNameController,
@@ -897,7 +1135,10 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                 hintText: 'นายวิชัย ศรีสุข',
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -916,7 +1157,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         // 3. เอกสารยืนยันตัวตน (PDPA)
         const Text(
           'เอกสารยืนยันตัวตน',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F2B5C),
+          ),
         ),
         const SizedBox(height: 10),
         GestureDetector(
@@ -937,7 +1182,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                     color: const Color(0xFFD9F7BE),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.lock_outline, color: Color(0xFF389E0D), size: 22),
+                  child: const Icon(
+                    Icons.lock_outline,
+                    color: Color(0xFF389E0D),
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -945,15 +1194,25 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _idCardFile != null ? _idCardFile!.name : 'สำเนาบัตรประชาชน.pdf',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0F2B5C)),
+                        _idCardFile != null
+                            ? _idCardFile!.name
+                            : 'สำเนาบัตรประชาชน.pdf',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Color(0xFF0F2B5C),
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       const Text(
                         'จัดเก็บแบบเข้ารหัสตาม PDPA',
-                        style: TextStyle(fontSize: 11, color: Color(0xFF52C41A), fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF52C41A),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
@@ -962,7 +1221,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: _idCardFile != null ? const Color(0xFF52C41A) : Colors.grey.shade300,
+                    color: _idCardFile != null
+                        ? const Color(0xFF52C41A)
+                        : Colors.grey.shade300,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.check, color: Colors.white, size: 18),
@@ -980,14 +1241,20 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
           children: [
             const Text(
               'รูปถ่ายหน้าร้าน',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0F2B5C),
+              ),
             ),
             Text(
               '${_shopImages.length} รูป (ขั้นต่ำ 3 รูป)',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: _shopImages.length >= 3 ? const Color(0xFF389E0D) : const Color(0xFFCF1322),
+                color: _shopImages.length >= 3
+                    ? const Color(0xFF389E0D)
+                    : const Color(0xFFCF1322),
               ),
             ),
           ],
@@ -1011,9 +1278,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFF0066FF).withOpacity(0.3)),
+                        border: Border.all(
+                          color: const Color(0xFF0066FF).withValues(alpha: 0.3),
+                        ),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6),
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 6,
+                          ),
                         ],
                       ),
                       child: ClipRRect(
@@ -1022,13 +1294,18 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                           future: img.readAsBytes(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return Image.memory(snapshot.data!, fit: BoxFit.cover);
+                              return Image.memory(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              );
                             }
                             return const Center(
                               child: SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             );
                           },
@@ -1042,8 +1319,15 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                         onTap: () => setState(() => _shopImages.removeAt(idx)),
                         child: Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(color: Colors.black87, shape: BoxShape.circle),
-                          child: const Icon(Icons.close, color: Colors.white, size: 12),
+                          decoration: const BoxDecoration(
+                            color: Colors.black87,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 12,
+                          ),
                         ),
                       ),
                     ),
@@ -1060,14 +1344,25 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF91CAFF), style: BorderStyle.solid, width: 1.5),
+                    border: Border.all(
+                      color: const Color(0xFF91CAFF),
+                      style: BorderStyle.solid,
+                      width: 1.5,
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
                       Icon(Icons.add, color: Color(0xFF0066FF), size: 24),
                       SizedBox(height: 4),
-                      Text('เพิ่มรูป', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0066FF))),
+                      Text(
+                        'เพิ่มรูป',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0066FF),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -1084,18 +1379,33 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
             backgroundColor: const Color(0xFF0066FF),
             foregroundColor: Colors.white,
             minimumSize: const Size(double.infinity, 54),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             elevation: 2,
           ),
           onPressed: _isLoading ? null : _handleSubmit,
           child: _isLoading
-              ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+              ? const SizedBox(
+                  height: 22,
+                  width: 22,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Icon(Icons.upload, size: 20),
                     SizedBox(width: 8),
-                    Text('ส่งคำขอเปิดร้าน', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      'ส่งคำขอเปิดร้าน',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
         ),
@@ -1121,7 +1431,11 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 16, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -1136,19 +1450,31 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               border: Border.all(color: const Color(0xFFB7EB8F), width: 2),
             ),
             child: const Center(
-              child: Icon(Icons.check_circle_rounded, color: Color(0xFF52C41A), size: 54),
+              child: Icon(
+                Icons.check_circle_rounded,
+                color: Color(0xFF52C41A),
+                size: 54,
+              ),
             ),
           ),
           const SizedBox(height: 24),
           const Text(
             'ส่งคำขอเปิดร้านสำเร็จ! 🎉',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF0F2B5C)),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0F2B5C),
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             'คำขอเปิดร้าน "${_shopNameController.text.trim()}" ถูกส่งไปยังผู้ดูแลระบบเรียบร้อยแล้ว\nเจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและอนุมัติภายใน 1–2 วันทำการ',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary, height: 1.5),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppTheme.textSecondary,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 24),
           Container(
@@ -1160,12 +1486,20 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
             ),
             child: Row(
               children: const [
-                Icon(Icons.access_time_filled, color: Color(0xFFFAAD14), size: 20),
+                Icon(
+                  Icons.access_time_filled,
+                  color: Color(0xFFFAAD14),
+                  size: 20,
+                ),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'สถานะปัจจุบัน: รอการอนุมัติ (Pending Verification)',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFD46B08)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFD46B08),
+                    ),
                   ),
                 ),
               ],
@@ -1177,12 +1511,17 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               backgroundColor: const Color(0xFF0066FF),
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('กลับสู่หน้าหลัก', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'กลับสู่หน้าหลัก',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -1201,7 +1540,14 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F2B5C))),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF0F2B5C),
+          ),
+        ),
         const SizedBox(height: 6),
         TextFormField(
           controller: controller,
@@ -1209,10 +1555,15 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
           keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: icon != null ? Icon(icon, color: const Color(0xFF0066FF), size: 20) : null,
+            prefixIcon: icon != null
+                ? Icon(icon, color: const Color(0xFF0066FF), size: 20)
+                : null,
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -1223,7 +1574,10 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xFF0066FF), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF0066FF),
+                width: 1.5,
+              ),
             ),
           ),
         ),
@@ -1241,7 +1595,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
             color: isSelected ? const Color(0xFFE6F7FF) : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? const Color(0xFF0066FF) : const Color(0xFFE2E8F0),
+              color: isSelected
+                  ? const Color(0xFF0066FF)
+                  : const Color(0xFFE2E8F0),
               width: isSelected ? 1.5 : 1,
             ),
           ),
@@ -1251,7 +1607,9 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? const Color(0xFF0066FF) : AppTheme.textPrimary,
+                color: isSelected
+                    ? const Color(0xFF0066FF)
+                    : AppTheme.textPrimary,
               ),
             ),
           ),
@@ -1263,7 +1621,13 @@ class _RegisterShopScreenState extends State<RegisterShopScreen> {
   Widget _buildCityChip(String label, double lat, double lng, String address) {
     final isCurrent = (_latitude == lat && _longitude == lng);
     return ActionChip(
-      label: Text(label, style: TextStyle(fontSize: 11, color: isCurrent ? Colors.white : const Color(0xFF0F2B5C))),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          color: isCurrent ? Colors.white : const Color(0xFF0F2B5C),
+        ),
+      ),
       backgroundColor: isCurrent ? const Color(0xFF0066FF) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onPressed: () {

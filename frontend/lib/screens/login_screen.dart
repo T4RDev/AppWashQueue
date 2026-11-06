@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
@@ -47,7 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
         (route) => false,
       );
     } else {
-      AppSnackBar.showError(context, authProvider.errorMessage ?? 'เข้าสู่ระบบไม่สำเร็จ');
+      AppSnackBar.showError(
+        context,
+        authProvider.errorMessage ?? 'เข้าสู่ระบบไม่สำเร็จ',
+      );
     }
   }
 
@@ -84,7 +88,10 @@ class _LoginScreenState extends State<LoginScreen> {
             style: ElevatedButton.styleFrom(minimumSize: const Size(90, 40)),
             onPressed: () {
               Navigator.pop(ctx);
-              AppSnackBar.showSuccess(context, 'ส่งรหัส OTP ไปยังอีเมลเรียบร้อยแล้ว');
+              AppSnackBar.showSuccess(
+                context,
+                'ส่งรหัส OTP ไปยังอีเมลเรียบร้อยแล้ว',
+              );
             },
             child: const Text('ส่ง OTP'),
           ),
@@ -105,7 +112,12 @@ class _LoginScreenState extends State<LoginScreen> {
             // Top Blue Header (Matches 1.2_Login.png)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 50, left: 24, right: 24, bottom: 44),
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 24,
+                right: 24,
+                bottom: 44,
+              ),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xFF005AE0), Color(0xFF0066FF)],
@@ -128,10 +140,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                        ),
                       ],
                     ),
-                    child: const Icon(Icons.water_drop, color: Color(0xFF0066FF), size: 30),
+                    child: const Icon(
+                      Icons.water_drop,
+                      color: Color(0xFF0066FF),
+                      size: 30,
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -148,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'เข้าสู่ระบบเพื่อจองคิวล้างรถของคุณ',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withValues(alpha: 0.85),
                     ),
                   ),
                 ],
@@ -167,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
@@ -178,38 +197,68 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('อีเมล', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary)),
+                        const Text(
+                          'อีเมล',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
                             hintText: 'somchai@gmail.com',
-                            prefixIcon: Icon(Icons.mail_outline, color: AppTheme.primaryColor),
+                            prefixIcon: Icon(
+                              Icons.mail_outline,
+                              color: AppTheme.primaryColor,
+                            ),
                           ),
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) return 'กรุณากรอกอีเมล';
-                            if (!value.contains('@')) return 'รูปแบบอีเมลไม่ถูกต้อง';
+                            if (value == null || value.trim().isEmpty)
+                              return 'กรุณากรอกอีเมล';
+                            if (!value.contains('@'))
+                              return 'รูปแบบอีเมลไม่ถูกต้อง';
                             return null;
                           },
                         ),
                         const SizedBox(height: 16),
 
-                        const Text('รหัสผ่าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary)),
+                        const Text(
+                          'รหัสผ่าน',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             hintText: '••••••••',
-                            prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.textMuted),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline,
+                              color: AppTheme.textMuted,
+                            ),
                             suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: AppTheme.textMuted),
-                              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                color: AppTheme.textMuted,
+                              ),
+                              onPressed: () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
                             ),
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) return 'กรุณากรอกรหัสผ่าน';
+                            if (value == null || value.isEmpty)
+                              return 'กรุณากรอกรหัสผ่าน';
                             return null;
                           },
                         ),
@@ -227,17 +276,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Checkbox(
                                     value: _rememberMe,
                                     activeColor: AppTheme.primaryColor,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                    onChanged: (v) => setState(() => _rememberMe = v ?? true),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    onChanged: (v) =>
+                                        setState(() => _rememberMe = v ?? true),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text('จดจำฉันไว้', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                                const Text(
+                                  'จดจำฉันไว้',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
                               ],
                             ),
                             TextButton(
                               onPressed: _showForgotPasswordDialog,
-                              child: const Text('ลืมรหัสผ่าน?', style: TextStyle(fontSize: 13, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                              child: const Text(
+                                'ลืมรหัสผ่าน?',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppTheme.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -249,17 +314,30 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: AppTheme.primaryColor,
                             foregroundColor: Colors.white,
                             minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                             elevation: 0,
                           ),
-                          onPressed: authProvider.isLoading ? null : _handleLogin,
+                          onPressed: authProvider.isLoading
+                              ? null
+                              : _handleLogin,
                           child: authProvider.isLoading
                               ? const SizedBox(
                                   height: 22,
                                   width: 22,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
                                 )
-                              : const Text('เข้าสู่ระบบ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              : const Text(
+                                  'เข้าสู่ระบบ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                         const SizedBox(height: 18),
 
@@ -269,7 +347,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(child: Divider()),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text('หรือ', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                              child: Text(
+                                'หรือ',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textMuted,
+                                ),
+                              ),
                             ),
                             Expanded(child: Divider()),
                           ],
@@ -282,10 +366,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             foregroundColor: AppTheme.textPrimary,
                             side: BorderSide(color: Colors.grey.shade300),
                             minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                           onPressed: () {
-                            AppSnackBar.showSuccess(context, 'เข้าสู่ระบบด้วย Google เรียบร้อยแล้ว');
+                            AppSnackBar.showSuccess(
+                              context,
+                              'เข้าสู่ระบบด้วย Google เรียบร้อยแล้ว',
+                            );
                             _emailController.text = 'somchai@gmail.com';
                             _passwordController.text = 'password123';
                             _handleLogin();
@@ -293,8 +382,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
-                              Text('G ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
-                              Text('เข้าสู่ระบบด้วย Google', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                              Text(
+                                'G ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              Text(
+                                'เข้าสู่ระบบด้วย Google',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -311,17 +413,29 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('ยังไม่มีบัญชี? ', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                  const Text(
+                    'ยังไม่มีบัญชี? ',
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 13,
+                    ),
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
+                        ),
                       );
                     },
                     child: const Text(
                       'สมัครสมาชิก',
-                      style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold, fontSize: 13),
+                      style: TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],
@@ -335,12 +449,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const RegisterShopScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const RegisterShopScreen(),
+                    ),
                   );
                 },
                 borderRadius: BorderRadius.circular(24),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 9,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F7FF),
                     borderRadius: BorderRadius.circular(24),

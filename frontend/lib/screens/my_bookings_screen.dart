@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/booking_provider.dart';
 import '../models/booking_model.dart';
 import '../core/app_theme.dart';
@@ -14,7 +16,8 @@ class MyBookingsScreen extends StatefulWidget {
   State<MyBookingsScreen> createState() => _MyBookingsScreenState();
 }
 
-class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerProviderStateMixin {
+class _MyBookingsScreenState extends State<MyBookingsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Timer? _autoPollTimer;
 
@@ -51,7 +54,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           style: TextStyle(fontSize: 14),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ปิด')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ปิด'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.error,
@@ -66,20 +72,30 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
 
     if (confirm != true) return;
 
-    final bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+    final bookingProvider = Provider.of<BookingProvider>(
+      context,
+      listen: false,
+    );
     final success = await bookingProvider.cancelBooking(booking.id);
 
     if (!mounted) return;
     if (success) {
-      AppSnackBar.showSuccess(context, 'ยกเลิกคิวสำเร็จ และคืนเครดิตเข้ากระเป๋าเรียบร้อยแล้ว');
+      AppSnackBar.showSuccess(
+        context,
+        'ยกเลิกคิวสำเร็จ และคืนเครดิตเข้ากระเป๋าเรียบร้อยแล้ว',
+      );
       bookingProvider.fetchMyBookings();
     } else {
-      AppSnackBar.showError(context, bookingProvider.errorMessage ?? 'ยกเลิกไม่สำเร็จ');
+      AppSnackBar.showError(
+        context,
+        bookingProvider.errorMessage ?? 'ยกเลิกไม่สำเร็จ',
+      );
     }
   }
 
   void _showCheckInQrDialog(BuildContext context, BookingModel b) {
-    final qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=WASHQ-BOOKING-${b.id}';
+    final qrUrl =
+        'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=WASHQ-BOOKING-${b.id}';
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -87,11 +103,20 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
         title: Center(
           child: Column(
             children: [
-              Text(b.shopName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                b.shopName,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(
                 'คิววันที่ ${b.bookingDate} (${b.slotTimeRange})',
-                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textSecondary,
+                ),
               ),
             ],
           ),
@@ -106,7 +131,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.grey.shade200),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 10,
+                  ),
                 ],
               ),
               child: Image.network(
@@ -114,7 +142,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                 width: 190,
                 height: 190,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(Icons.qr_code_2, size: 120, color: Color(0xFF0066FF)),
+                errorBuilder: (_, _, _) => const Icon(
+                  Icons.qr_code_2,
+                  size: 120,
+                  color: Color(0xFF0066FF),
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -126,13 +158,21 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
               ),
               child: Text(
                 'รหัสคิว: #WQ-${b.id.toString().padLeft(5, '0')}',
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0066FF), fontSize: 14),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0066FF),
+                  fontSize: 14,
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'รถ: ${b.vehiclePlate} (${b.vehicleType})',
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimary,
+              ),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -147,10 +187,15 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0066FF),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('ปิดหน้าต่าง', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'ปิดหน้าต่าง',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ],
@@ -164,19 +209,39 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     final all = bookingProvider.bookings;
 
     // "กำลังจะถึง": pending_service, checked_in, in_service
-    final upcoming = all.where((b) => b.status == 'pending_service' || b.status == 'checked_in' || b.status == 'in_service').toList();
+    final upcoming = all
+        .where(
+          (b) =>
+              b.status == 'pending_service' ||
+              b.status == 'checked_in' ||
+              b.status == 'in_service',
+        )
+        .toList();
     // "ประวัติ": completed, cancelled, no_show
-    final history = all.where((b) => b.status == 'completed' || b.status.startsWith('cancelled') || b.status == 'no_show').toList();
+    final history = all
+        .where(
+          (b) =>
+              b.status == 'completed' ||
+              b.status.startsWith('cancelled') ||
+              b.status == 'no_show',
+        )
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('การจองของฉัน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'การจองของฉัน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 4.0,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFE8EEF5),
@@ -189,12 +254,19 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2)),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
                   ],
                 ),
                 labelColor: AppTheme.textPrimary,
                 unselectedLabelColor: AppTheme.textSecondary,
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
                 tabs: [
                   Tab(text: 'กำลังจะถึง (${upcoming.length})'),
                   Tab(text: 'ประวัติ (${history.length})'),
@@ -219,17 +291,27 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
     );
   }
 
-  Widget _buildBookingsList(List<BookingModel> list, {required bool isUpcoming}) {
+  Widget _buildBookingsList(
+    List<BookingModel> list, {
+    required bool isUpcoming,
+  }) {
     if (list.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(isUpcoming ? Icons.calendar_today_outlined : Icons.history, size: 54, color: AppTheme.textMuted),
+            Icon(
+              isUpcoming ? Icons.calendar_today_outlined : Icons.history,
+              size: 54,
+              color: AppTheme.textMuted,
+            ),
             const SizedBox(height: 12),
             Text(
               isUpcoming ? 'ไม่มีรายการจองที่กำลังจะถึง' : 'ไม่มีประวัติการจอง',
-              style: const TextStyle(fontSize: 15, color: AppTheme.textSecondary),
+              style: const TextStyle(
+                fontSize: 15,
+                color: AppTheme.textSecondary,
+              ),
             ),
           ],
         ),
@@ -245,8 +327,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
 
   Widget _buildBookingCard(BookingModel b) {
     final dateStr = b.bookingDate;
-    final startTime = b.startTime.length >= 5 ? b.startTime.substring(0, 5) : b.startTime;
-    final endTime = b.endTime.length >= 5 ? b.endTime.substring(0, 5) : b.endTime;
+    final startTime = b.startTime.length >= 5
+        ? b.startTime.substring(0, 5)
+        : b.startTime;
+    final endTime = b.endTime.length >= 5
+        ? b.endTime.substring(0, 5)
+        : b.endTime;
 
     final isInProgress = b.status == 'in_service' || b.status == 'checked_in';
     final isUpcoming = b.status == 'pending_service';
@@ -259,7 +345,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
       ),
       child: Column(
@@ -272,21 +362,28 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
               Expanded(
                 child: Text(
                   b.shopName,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppTheme.textPrimary,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: isInProgress
                       ? const Color(0xFFFFF7E6)
                       : isUpcoming
-                          ? const Color(0xFFE6F4FF)
-                          : isCompleted
-                              ? const Color(0xFFF6FFED)
-                              : Colors.grey.shade100,
+                      ? const Color(0xFFE6F4FF)
+                      : isCompleted
+                      ? const Color(0xFFF6FFED)
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -297,10 +394,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                     color: isInProgress
                         ? const Color(0xFFD46B08)
                         : isUpcoming
-                            ? AppTheme.primaryColor
-                            : isCompleted
-                                ? const Color(0xFF389E0D)
-                                : Colors.grey.shade700,
+                        ? AppTheme.primaryColor
+                        : isCompleted
+                        ? const Color(0xFF389E0D)
+                        : Colors.grey.shade700,
                   ),
                 ),
               ),
@@ -311,9 +408,19 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           // Date & Time
           Row(
             children: [
-              const Icon(Icons.calendar_today_outlined, size: 14, color: AppTheme.textMuted),
+              const Icon(
+                Icons.calendar_today_outlined,
+                size: 14,
+                color: AppTheme.textMuted,
+              ),
               const SizedBox(width: 6),
-              Text('$dateStr • $startTime–$endTime น.', style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+              Text(
+                '$dateStr • $startTime–$endTime น.',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -321,9 +428,19 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           // Vehicle & Service
           Row(
             children: [
-              const Icon(Icons.directions_car_outlined, size: 14, color: AppTheme.textMuted),
+              const Icon(
+                Icons.directions_car_outlined,
+                size: 14,
+                color: AppTheme.textMuted,
+              ),
               const SizedBox(width: 6),
-              Text('${b.plateNumber} • ${b.serviceName}', style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+              Text(
+                '${b.plateNumber} • ${b.serviceName}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -338,25 +455,42 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('ชำระแล้ว (พักไว้ในระบบ)', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-                Text('${b.finalPrice.toStringAsFixed(0)} เครดิต', style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor, fontSize: 13)),
+                const Text(
+                  'ชำระแล้ว (พักไว้ในระบบ)',
+                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                ),
+                Text(
+                  '${b.finalPrice.toStringAsFixed(0)} เครดิต',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
+                    fontSize: 13,
+                  ),
+                ),
               ],
             ),
           ),
 
           // QR Check-in Button for Active Bookings
-          if (b.status == 'pending_service' || b.status == 'checked_in' || isInProgress) ...[
+          if (b.status == 'pending_service' ||
+              b.status == 'checked_in' ||
+              isInProgress) ...[
             const SizedBox(height: 10),
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF0066FF),
                 side: const BorderSide(color: Color(0xFF91CAFF)),
                 minimumSize: const Size(double.infinity, 38),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => _showCheckInQrDialog(context, b),
               icon: const Icon(Icons.qr_code_2, size: 18),
-              label: const Text('แสดง QR สำหรับเช็คอินหน้าร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              label: const Text(
+                'แสดง QR สำหรับเช็คอินหน้าร้าน',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
             ),
           ],
 
@@ -384,7 +518,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                   Expanded(
                     child: Text(
                       'ยกเลิกล่วงหน้าอย่างน้อย 24 ชม. รับเครดิตคืนเต็มจำนวน หลังจากนั้นหรือไม่มาตามนัด จะไม่ได้รับเครดิตคืน',
-                      style: TextStyle(fontSize: 11, color: Color(0xFF274916), height: 1.3),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF274916),
+                        height: 1.3,
+                      ),
                     ),
                   ),
                 ],
@@ -398,11 +536,16 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                 foregroundColor: const Color(0xFFCF1322),
                 elevation: 0,
                 minimumSize: const Size(double.infinity, 40),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => _handleCancelBooking(b),
               icon: const Icon(Icons.close, size: 16),
-              label: const Text('ยกเลิกการจอง', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              label: const Text(
+                'ยกเลิกการจอง',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
             ),
           ],
 
@@ -415,7 +558,9 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                 foregroundColor: AppTheme.primaryColor,
                 elevation: 0,
                 minimumSize: const Size(double.infinity, 40),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -428,10 +573,22 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
                       bookingDate: dateStr,
                     ),
                   ),
-                ).then((_) => Provider.of<BookingProvider>(context, listen: false).fetchMyBookings());
+                ).then(
+                  (_) => Provider.of<BookingProvider>(
+                    context,
+                    listen: false,
+                  ).fetchMyBookings(),
+                );
               },
-              icon: const Icon(Icons.star_rounded, size: 18, color: Color(0xFFFFB800)),
-              label: const Text('ให้คะแนนรีวิวร้านค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              icon: const Icon(
+                Icons.star_rounded,
+                size: 18,
+                color: Color(0xFFFFB800),
+              ),
+              label: const Text(
+                'ให้คะแนนรีวิวร้านค้า',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
             ),
           ],
         ],
@@ -457,10 +614,26 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
-            Text('ยืนยัน', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-            Text('เข้ารับบริการ', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-            Text('กำลังให้บริการ', style: TextStyle(fontSize: 10, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
-            Text('เสร็จสิ้น', style: TextStyle(fontSize: 10, color: AppTheme.textMuted)),
+            Text(
+              'ยืนยัน',
+              style: TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+            ),
+            Text(
+              'เข้ารับบริการ',
+              style: TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+            ),
+            Text(
+              'กำลังให้บริการ',
+              style: TextStyle(
+                fontSize: 10,
+                color: AppTheme.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'เสร็จสิ้น',
+              style: TextStyle(fontSize: 10, color: AppTheme.textMuted),
+            ),
           ],
         ),
       ],
@@ -476,7 +649,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> with SingleTickerPr
           color: AppTheme.primaryColor,
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(color: AppTheme.primaryColor.withOpacity(0.4), blurRadius: 6),
+            BoxShadow(
+              color: AppTheme.primaryColor.withValues(alpha: 0.4),
+              blurRadius: 6,
+            ),
           ],
         ),
         child: const Icon(Icons.local_car_wash, size: 12, color: Colors.white),

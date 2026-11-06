@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -56,7 +57,12 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
     );
     if (!mounted) return;
     if (res.success) {
-      AppSnackBar.showSuccess(context, newStatus == 'active' ? 'ปลดระงับบัญชีเรียบร้อย' : 'ระงับบัญชีเรียบร้อย');
+      AppSnackBar.showSuccess(
+        context,
+        newStatus == 'active'
+            ? 'ปลดระงับบัญชีเรียบร้อย'
+            : 'ระงับบัญชีเรียบร้อย',
+      );
       _fetchAccounts();
     } else {
       AppSnackBar.showError(context, res.message);
@@ -71,7 +77,9 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
       final name = (s['shop_name'] ?? '').toString().toLowerCase();
       final phone = (s['phone'] ?? '').toString().toLowerCase();
       final email = (s['owner_email'] ?? '').toString().toLowerCase();
-      return name.contains(search) || phone.contains(search) || email.contains(search);
+      return name.contains(search) ||
+          phone.contains(search) ||
+          email.contains(search);
     }).toList();
 
     final filteredMembers = _users.where((u) {
@@ -79,7 +87,9 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
       final name = (u['full_name'] ?? '').toString().toLowerCase();
       final phone = (u['phone'] ?? '').toString().toLowerCase();
       final email = (u['email'] ?? '').toString().toLowerCase();
-      return name.contains(search) || phone.contains(search) || email.contains(search);
+      return name.contains(search) ||
+          phone.contains(search) ||
+          email.contains(search);
     }).toList();
 
     return Scaffold(
@@ -89,10 +99,20 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
           children: [
             // Header (Matches 4.2_Accounts_Permissions.png)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 16.0,
+              ),
               child: Row(
                 children: const [
-                  Text('จัดการบัญชี', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                  Text(
+                    'จัดการบัญชี',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -105,7 +125,11 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
                   ],
                 ),
                 child: TextField(
@@ -133,8 +157,14 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
                 padding: const EdgeInsets.all(4),
                 child: Row(
                   children: [
-                    _buildSegmentTab('shops', 'ร้านล้างรถ (${filteredShops.length})'),
-                    _buildSegmentTab('members', 'สมาชิก (${filteredMembers.length})'),
+                    _buildSegmentTab(
+                      'shops',
+                      'ร้านล้างรถ (${filteredShops.length})',
+                    ),
+                    _buildSegmentTab(
+                      'members',
+                      'สมาชิก (${filteredMembers.length})',
+                    ),
                   ],
                 ),
               ),
@@ -148,14 +178,22 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
                       onRefresh: _fetchAccounts,
                       child: _currentType == 'shops'
                           ? ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8,
+                              ),
                               itemCount: filteredShops.length,
-                              itemBuilder: (ctx, i) => _buildShopAccountCard(filteredShops[i]),
+                              itemBuilder: (ctx, i) =>
+                                  _buildShopAccountCard(filteredShops[i]),
                             )
                           : ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8,
+                              ),
                               itemCount: filteredMembers.length,
-                              itemBuilder: (ctx, i) => _buildMemberAccountCard(filteredMembers[i]),
+                              itemBuilder: (ctx, i) =>
+                                  _buildMemberAccountCard(filteredMembers[i]),
                             ),
                     ),
             ),
@@ -176,7 +214,13 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
             color: isSelected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected
-                ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 : null,
           ),
           alignment: Alignment.center,
@@ -207,7 +251,11 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
       ),
       child: Column(
@@ -222,33 +270,69 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
                   color: AppTheme.primaryColor,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(Icons.storefront, color: Colors.white, size: 24),
+                child: const Icon(
+                  Icons.storefront,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(shopName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      shopName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(email, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                    Text(
+                      email,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textMuted,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: isActive ? const Color(0xFFF6FFED) : const Color(0xFFFFF2F0),
+                  color: isActive
+                      ? const Color(0xFFF6FFED)
+                      : const Color(0xFFFFF2F0),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(width: 6, height: 6, decoration: BoxDecoration(shape: BoxShape.circle, color: isActive ? const Color(0xFF52C41A) : const Color(0xFFF5222D))),
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isActive
+                            ? const Color(0xFF52C41A)
+                            : const Color(0xFFF5222D),
+                      ),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       isActive ? 'ใช้งานอยู่' : 'ถูกระงับ',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isActive ? const Color(0xFF389E0D) : const Color(0xFFCF1322)),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: isActive
+                            ? const Color(0xFF389E0D)
+                            : const Color(0xFFCF1322),
+                      ),
                     ),
                   ],
                 ),
@@ -258,12 +342,27 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
           const Divider(height: 24),
 
           // Permission Toggles (Matches 4.2_Accounts_Permissions.png)
-          const Text('สิทธิ์การเข้าถึง', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary)),
+          const Text(
+            'สิทธิ์การเข้าถึง',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: AppTheme.textPrimary,
+            ),
+          ),
           const SizedBox(height: 10),
 
-          _buildPermissionRow('แสดงร้านบนแอปพลิเคชัน', 'ลูกค้าค้นหาและดูร้านได้', true),
+          _buildPermissionRow(
+            'แสดงร้านบนแอปพลิเคชัน',
+            'ลูกค้าค้นหาและดูร้านได้',
+            true,
+          ),
           _buildPermissionRow('รับการจองคิว', 'เปิดให้ลูกค้าจองสล็อต', true),
-          _buildPermissionRow('แก้ไขราคา & สล็อต', 'เจ้าของร้านจัดการเองได้', true),
+          _buildPermissionRow(
+            'แก้ไขราคา & สล็อต',
+            'เจ้าของร้านจัดการเองได้',
+            true,
+          ),
           const SizedBox(height: 14),
 
           // Action Buttons: แก้ไขข้อมูล vs ระงับบัญชี (Matches 4.2_Accounts_Permissions.png)
@@ -275,28 +374,54 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
                     foregroundColor: AppTheme.textPrimary,
                     side: BorderSide(color: Colors.grey.shade300),
                     minimumSize: const Size(0, 40),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () {
-                    AppSnackBar.showSuccess(context, 'เปิดดูข้อมูลร้าน $shopName');
+                    AppSnackBar.showSuccess(
+                      context,
+                      'เปิดดูข้อมูลร้าน $shopName',
+                    );
                   },
                   icon: const Icon(Icons.edit_outlined, size: 16),
-                  label: const Text('แก้ไขข้อมูล', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'แก้ไขข้อมูล',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isActive ? const Color(0xFFFFF2F0) : const Color(0xFFF6FFED),
-                    foregroundColor: isActive ? const Color(0xFFCF1322) : const Color(0xFF389E0D),
+                    backgroundColor: isActive
+                        ? const Color(0xFFFFF2F0)
+                        : const Color(0xFFF6FFED),
+                    foregroundColor: isActive
+                        ? const Color(0xFFCF1322)
+                        : const Color(0xFF389E0D),
                     elevation: 0,
                     minimumSize: const Size(0, 40),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  onPressed: () => _toggleUserStatus(ownerId, isActive ? 'active' : 'suspended'),
-                  icon: Icon(isActive ? Icons.block : Icons.check_circle, size: 16),
-                  label: Text(isActive ? 'ระงับบัญชี' : 'ปลดระงับ', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  onPressed: () => _toggleUserStatus(
+                    ownerId,
+                    isActive ? 'active' : 'suspended',
+                  ),
+                  icon: Icon(
+                    isActive ? Icons.block : Icons.check_circle,
+                    size: 16,
+                  ),
+                  label: Text(
+                    isActive ? 'ระงับบัญชี' : 'ปลดระงับ',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -321,37 +446,65 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: const Color(0xFF722ED1).withOpacity(0.15),
+            backgroundColor: const Color(0xFF722ED1).withValues(alpha: 0.15),
             foregroundColor: const Color(0xFF722ED1),
-            child: Text(name.isNotEmpty ? name.substring(0, 1) : 'U', style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              name.isNotEmpty ? name.substring(0, 1) : 'U',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                Text('$email • $phone', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  '$email • $phone',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textMuted,
+                  ),
+                ),
               ],
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isActive ? const Color(0xFFFFF2F0) : const Color(0xFFF6FFED),
-              foregroundColor: isActive ? const Color(0xFFCF1322) : const Color(0xFF389E0D),
+              backgroundColor: isActive
+                  ? const Color(0xFFFFF2F0)
+                  : const Color(0xFFF6FFED),
+              foregroundColor: isActive
+                  ? const Color(0xFFCF1322)
+                  : const Color(0xFF389E0D),
               elevation: 0,
               minimumSize: const Size(70, 34),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 10),
             ),
             onPressed: () => _toggleUserStatus(userId, status),
-            child: Text(isActive ? 'ระงับ' : 'ปลดระงับ', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            child: Text(
+              isActive ? 'ระงับ' : 'ปลดระงับ',
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -367,15 +520,24 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-              Text(desc, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                desc,
+                style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+              ),
             ],
           ),
           Transform.scale(
             scale: 0.8,
             child: Switch(
               value: value,
-              activeColor: const Color(0xFF00B96B),
+              activeThumbColor: const Color(0xFF00B96B),
               onChanged: (_) {},
             ),
           ),
@@ -384,4 +546,3 @@ class _AdminAccountsTabState extends State<AdminAccountsTab> {
     );
   }
 }
-

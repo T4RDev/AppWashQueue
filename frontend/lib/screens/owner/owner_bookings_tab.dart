@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -63,7 +64,10 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
           children: const [
             Icon(Icons.qr_code_scanner, color: Color(0xFF0066FF)),
             SizedBox(width: 8),
-            Text('เช็คอินคิวลูกค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+            Text(
+              'เช็คอินคิวลูกค้า',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            ),
           ],
         ),
         content: Column(
@@ -85,14 +89,22 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('ยกเลิก')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ยกเลิก'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0066FF),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onPressed: () {
-              final raw = codeController.text.trim().replaceAll(RegExp(r'[^0-9]'), '');
+              final raw = codeController.text.trim().replaceAll(
+                RegExp(r'[^0-9]'),
+                '',
+              );
               final id = int.tryParse(raw);
               if (id == null) {
                 AppSnackBar.showError(context, 'รหัสคิวไม่ถูกต้อง');
@@ -101,7 +113,13 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
               Navigator.pop(ctx);
               _updateStatus(id, 'in_service');
             },
-            child: const Text('เช็คอินเริ่มล้าง', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'เช็คอินเริ่มล้าง',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -113,7 +131,10 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('จัดการคิวร้านค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'จัดการคิวร้านค้า',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -150,11 +171,20 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
                 : RefreshIndicator(
                     onRefresh: _fetchBookings,
                     child: _filteredBookings.isEmpty
-                        ? const Center(child: Text('ไม่พบรายการจองตามเงื่อนไข', style: TextStyle(color: AppTheme.textSecondary)))
+                        ? const Center(
+                            child: Text(
+                              'ไม่พบรายการจองตามเงื่อนไข',
+                              style: TextStyle(color: AppTheme.textSecondary),
+                            ),
+                          )
                         : ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             itemCount: _filteredBookings.length,
-                            itemBuilder: (ctx, i) => _buildBookingItem(_filteredBookings[i]),
+                            itemBuilder: (ctx, i) =>
+                                _buildBookingItem(_filteredBookings[i]),
                           ),
                   ),
           ),
@@ -197,7 +227,11 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -206,12 +240,29 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$date • $startTime - $endTime น.', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.primaryColor)),
-              Text('฿$total', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.accentColor)),
+              Text(
+                '$date • $startTime - $endTime น.',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: AppTheme.primaryColor,
+                ),
+              ),
+              Text(
+                '฿$total',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppTheme.accentColor,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
-          Text('$plate ($vehicleType) • $serviceName', style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary)),
+          Text(
+            '$plate ($vehicleType) • $serviceName',
+            style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary),
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -224,7 +275,10 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                   onPressed: () => _updateStatus(bookingId, 'in_progress'),
-                  child: const Text('รับรถเข้าบริการ', style: TextStyle(fontSize: 12)),
+                  child: const Text(
+                    'รับรถเข้าบริการ',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 OutlinedButton(
@@ -235,7 +289,10 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                   onPressed: () => _updateStatus(bookingId, 'no_show'),
-                  child: const Text('ไม่มาตามนัด', style: TextStyle(fontSize: 12)),
+                  child: const Text(
+                    'ไม่มาตามนัด',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
               ] else if (status == 'in_progress') ...[
                 ElevatedButton(
@@ -245,16 +302,28 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                   onPressed: () => _updateStatus(bookingId, 'completed'),
-                  child: const Text('บริการเสร็จสิ้น ✓', style: TextStyle(fontSize: 12)),
+                  child: const Text(
+                    'บริการเสร็จสิ้น ✓',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
               ] else ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(status, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                  child: Text(
+                    status,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -264,4 +333,3 @@ class _OwnerBookingsTabState extends State<OwnerBookingsTab> {
     );
   }
 }
-

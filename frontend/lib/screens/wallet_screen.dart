@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/wallet_provider.dart';
 import '../models/wallet_model.dart';
 import '../core/app_theme.dart';
@@ -23,13 +24,17 @@ class _WalletScreenState extends State<WalletScreen> {
     });
   }
 
-  List<WalletTransactionModel> _filterTransactions(List<WalletTransactionModel> list) {
+  List<WalletTransactionModel> _filterTransactions(
+    List<WalletTransactionModel> list,
+  ) {
     if (_selectedFilter == 'all') return list;
     if (_selectedFilter == 'topup') {
       return list.where((t) => t.type == 'topup').toList();
     }
     if (_selectedFilter == 'payment') {
-      return list.where((t) => t.type == 'booking_payment' || t.type == 'payment').toList();
+      return list
+          .where((t) => t.type == 'booking_payment' || t.type == 'payment')
+          .toList();
     }
     if (_selectedFilter == 'refund') {
       return list.where((t) => t.type == 'refund').toList();
@@ -47,14 +52,21 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('Wallet ของฉัน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'Wallet ของฉัน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
             child: Center(
               child: Text(
                 '1 เครดิต = 1 บาท',
-                style: TextStyle(fontSize: 12, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textMuted,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -81,7 +93,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF0072FF).withOpacity(0.35),
+                      color: const Color(0xFF0072FF).withValues(alpha: 0.35),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -92,7 +104,11 @@ class _WalletScreenState extends State<WalletScreen> {
                   children: [
                     const Text(
                       'เครดิตคงเหลือ',
-                      style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -111,7 +127,11 @@ class _WalletScreenState extends State<WalletScreen> {
                         const SizedBox(width: 8),
                         const Text(
                           'เครดิต',
-                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -120,19 +140,29 @@ class _WalletScreenState extends State<WalletScreen> {
                     // Escrow Pending Hold notice
                     if ((wallet?.pendingBalance ?? 0.0) > 0)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
+                          color: Colors.white.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.lock_outline, size: 14, color: Colors.white),
+                            const Icon(
+                              Icons.lock_outline,
+                              size: 14,
+                              color: Colors.white,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'หักไว้ ${wallet!.pendingBalance.toStringAsFixed(0)} เครดิต (การจองที่รอดำเนินการ)',
-                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -156,13 +186,22 @@ class _WalletScreenState extends State<WalletScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const TopUpScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const TopUpScreen(),
+                          ),
                         ).then((_) => walletProvider.fetchMyWallet());
                       },
-                      icon: const Icon(Icons.add, size: 20, color: AppTheme.primaryColor),
+                      icon: const Icon(
+                        Icons.add,
+                        size: 20,
+                        color: AppTheme.primaryColor,
+                      ),
                       label: const Text(
                         'เติมเงิน',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -173,7 +212,11 @@ class _WalletScreenState extends State<WalletScreen> {
               // Transaction History Section (Matches 2.8_MyWallet.png)
               const Text(
                 'ประวัติธุรกรรม',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
               ),
               const SizedBox(height: 12),
 
@@ -197,7 +240,10 @@ class _WalletScreenState extends State<WalletScreen> {
               // Transactions List
               if (walletProvider.isLoading && allTransactions.isEmpty)
                 const Center(
-                  child: Padding(padding: EdgeInsets.all(32.0), child: CircularProgressIndicator()),
+                  child: Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 )
               else if (transactions.isEmpty)
                 Container(
@@ -209,9 +255,16 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: Center(
                     child: Column(
                       children: const [
-                        Icon(Icons.receipt_long_outlined, size: 48, color: AppTheme.textMuted),
+                        Icon(
+                          Icons.receipt_long_outlined,
+                          size: 48,
+                          color: AppTheme.textMuted,
+                        ),
                         SizedBox(height: 8),
-                        Text('ยังไม่มีรายการธุรกรรมในหมวดนี้', style: TextStyle(color: AppTheme.textSecondary)),
+                        Text(
+                          'ยังไม่มีรายการธุรกรรมในหมวดนี้',
+                          style: TextStyle(color: AppTheme.textSecondary),
+                        ),
                       ],
                     ),
                   ),
@@ -221,7 +274,8 @@ class _WalletScreenState extends State<WalletScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: transactions.length,
-                  itemBuilder: (ctx, i) => _buildTransactionCard(transactions[i]),
+                  itemBuilder: (ctx, i) =>
+                      _buildTransactionCard(transactions[i]),
                 ),
             ],
           ),
@@ -251,7 +305,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   Widget _buildTransactionCard(WalletTransactionModel t) {
     final isPositive = t.isPositive;
-    final date = t.createdAt.length >= 10 ? t.createdAt.substring(0, 10) : t.createdAt;
+    final date = t.createdAt.length >= 10
+        ? t.createdAt.substring(0, 10)
+        : t.createdAt;
 
     Color iconBg;
     Color iconColor;
@@ -292,7 +348,7 @@ class _WalletScreenState extends State<WalletScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -312,12 +368,19 @@ class _WalletScreenState extends State<WalletScreen> {
               children: [
                 Text(
                   t.notes ?? t.typeThai,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppTheme.textPrimary),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: AppTheme.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   date,
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -330,7 +393,9 @@ class _WalletScreenState extends State<WalletScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isPositive ? const Color(0xFF52C41A) : AppTheme.textPrimary,
+                  color: isPositive
+                      ? const Color(0xFF52C41A)
+                      : AppTheme.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
@@ -342,7 +407,11 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
                 child: Text(
                   statusText,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: statusColor),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: statusColor,
+                  ),
                 ),
               ),
             ],

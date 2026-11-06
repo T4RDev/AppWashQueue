@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -40,9 +41,19 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
       // 1. Fetch wallet
       final wRes = await _api.get(ApiConstants.wallet);
       if (wRes.success && wRes.data != null) {
-        _balance = double.tryParse(wRes.data['wallet']['balance']?.toString() ?? '0') ?? 0.0;
-        _pendingBalance = double.tryParse(wRes.data['wallet']['pending_balance']?.toString() ?? '0') ?? 0.0;
-        _transactions = wRes.data['transactions'] is List ? wRes.data['transactions'] : [];
+        _balance =
+            double.tryParse(
+              wRes.data['wallet']['balance']?.toString() ?? '0',
+            ) ??
+            0.0;
+        _pendingBalance =
+            double.tryParse(
+              wRes.data['wallet']['pending_balance']?.toString() ?? '0',
+            ) ??
+            0.0;
+        _transactions = wRes.data['transactions'] is List
+            ? wRes.data['transactions']
+            : [];
       }
 
       // 2. Fetch shop bank info
@@ -74,7 +85,10 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
 
     if (!mounted) return;
     if (res.success) {
-      AppSnackBar.showSuccess(context, 'ส่งคำขอถอนเงินเรียบร้อยแล้ว รอแอดมินอนุมัติ');
+      AppSnackBar.showSuccess(
+        context,
+        'ส่งคำขอถอนเงินเรียบร้อยแล้ว รอแอดมินอนุมัติ',
+      );
       _amountCtrl.clear();
       _fetchWalletData();
     } else {
@@ -94,7 +108,10 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('Wallet ของร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'Wallet ของร้าน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: _isLoading
@@ -117,13 +134,24 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                         ),
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
-                          BoxShadow(color: const Color(0xFF103B7B).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6)),
+                          BoxShadow(
+                            color: const Color(0xFF103B7B)
+                                .withValues(alpha: 0.3),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('เครดิตร้านคงเหลือ', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                          const Text(
+                            'เครดิตร้านคงเหลือ',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -131,22 +159,38 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                             children: [
                               Text(
                                 _balance.toStringAsFixed(0),
-                                style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 8),
-                              const Text('เครดิต', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                              const Text(
+                                'เครดิต',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 16,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 12),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               'รอโอนจากการจองที่ยังไม่เสร็จสิ้น ${_pendingBalance.toStringAsFixed(0)} เครดิต',
-                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ],
@@ -161,29 +205,50 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 3)),
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('ขอถอนเงินเข้าบัญชีร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary)),
+                          const Text(
+                            'ขอถอนเงินเข้าบัญชีร้าน',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
                           const SizedBox(height: 14),
 
                           // Amount input box with suffix 'เครดิต'
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppTheme.primaryColor, width: 1.5),
+                              border: Border.all(
+                                color: AppTheme.primaryColor,
+                                width: 1.5,
+                              ),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: TextField(
                                     controller: _amountCtrl,
                                     keyboardType: TextInputType.number,
-                                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.textPrimary,
+                                    ),
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       hintText: '0',
@@ -193,7 +258,13 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                                     onChanged: (_) => setState(() {}),
                                   ),
                                 ),
-                                const Text('เครดิต', style: TextStyle(fontSize: 14, color: AppTheme.textMuted)),
+                                const Text(
+                                  'เครดิต',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppTheme.textMuted,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -203,16 +274,43 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('ค่าธรรมเนียมแพลตฟอร์ม 5%', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
-                              Text('- ฿${fee.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 13)),
+                              const Text(
+                                'ค่าธรรมเนียมแพลตฟอร์ม 5%',
+                                style: TextStyle(
+                                  color: AppTheme.textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              Text(
+                                '- ฿${fee.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('ยอดที่จะได้รับ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary)),
-                              Text('฿${netAmount.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.primaryColor)),
+                              const Text(
+                                'ยอดที่จะได้รับ',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: AppTheme.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                '฿${netAmount.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: AppTheme.primaryColor,
+                                ),
+                              ),
                             ],
                           ),
                           const Divider(height: 24),
@@ -220,12 +318,19 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                           // Bank details row
                           Row(
                             children: [
-                              const Icon(Icons.account_balance, size: 18, color: AppTheme.textSecondary),
+                              const Icon(
+                                Icons.account_balance,
+                                size: 18,
+                                color: AppTheme.textSecondary,
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   '$bankName • $bankAccNum • $bankAccName',
-                                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.textSecondary,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -239,13 +344,28 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                               backgroundColor: AppTheme.primaryColor,
                               foregroundColor: Colors.white,
                               minimumSize: const Size(double.infinity, 48),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
                               elevation: 0,
                             ),
                             onPressed: _isSubmitting ? null : _handleWithdraw,
                             child: _isSubmitting
-                                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                : const Text('ส่งคำขอถอนเงิน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'ส่งคำขอถอนเงิน',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
@@ -253,13 +373,28 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
                     const SizedBox(height: 24),
 
                     // Transaction History Section (Matches 3.4_Owner_Wallet.png)
-                    const Text('ประวัติเครดิตร้าน', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                    const Text(
+                      'ประวัติเครดิตร้าน',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     if (_transactions.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-                        child: const Center(child: Text('ยังไม่มีประวัติเครดิต', style: TextStyle(color: AppTheme.textSecondary))),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'ยังไม่มีประวัติเครดิต',
+                            style: TextStyle(color: AppTheme.textSecondary),
+                          ),
+                        ),
                       )
                     else
                       ..._transactions.map((t) => _buildTransactionCard(t)),
@@ -277,9 +412,15 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
     final desc = t['description'] ?? 'บริการเสร็จสิ้น';
     final createdAt = t['created_at']?.toString().substring(0, 10) ?? '';
 
-    Color iconBg = isPositive ? const Color(0xFFF6FFED) : const Color(0xFFFFF2F0);
-    Color iconColor = isPositive ? const Color(0xFF52C41A) : const Color(0xFFF5222D);
-    IconData icon = isPositive ? Icons.check_circle_outline : Icons.arrow_upward;
+    Color iconBg = isPositive
+        ? const Color(0xFFF6FFED)
+        : const Color(0xFFFFF2F0);
+    Color iconColor = isPositive
+        ? const Color(0xFF52C41A)
+        : const Color(0xFFF5222D);
+    IconData icon = isPositive
+        ? Icons.check_circle_outline
+        : Icons.arrow_upward;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -288,7 +429,11 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
@@ -303,9 +448,21 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(desc, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                Text(
+                  desc,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(createdAt, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                Text(
+                  createdAt,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textMuted,
+                  ),
+                ),
               ],
             ),
           ),
@@ -314,7 +471,9 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isPositive ? const Color(0xFF52C41A) : const Color(0xFFF5222D),
+              color: isPositive
+                  ? const Color(0xFF52C41A)
+                  : const Color(0xFFF5222D),
             ),
           ),
         ],
@@ -322,4 +481,3 @@ class _OwnerWalletTabState extends State<OwnerWalletTab> {
     );
   }
 }
-

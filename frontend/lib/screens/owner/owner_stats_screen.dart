@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_theme.dart';
 
 class OwnerStatsScreen extends StatefulWidget {
@@ -16,7 +17,10 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('สถิติร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'สถิติร้าน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -48,7 +52,11 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 3)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
                 ],
               ),
               child: Column(
@@ -57,21 +65,42 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('รายได้ ตุลาคม 2569', style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
+                      const Text(
+                        'รายได้ ตุลาคม 2569',
+                        style: TextStyle(
+                          color: AppTheme.textMuted,
+                          fontSize: 13,
+                        ),
+                      ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF6FFED),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text('▲ 12% จากเดือนก่อน', style: TextStyle(fontSize: 11, color: Color(0xFF389E0D), fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          '▲ 12% จากเดือนก่อน',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF389E0D),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   const Text(
                     '฿48,600',
-                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold, color: AppTheme.textPrimary, letterSpacing: -0.5),
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
                   ),
                   const SizedBox(height: 24),
 
@@ -80,10 +109,30 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildBarCol('9.8k', 0.55, 'สัปดาห์ 1', isHighlight: false),
-                      _buildBarCol('12.4k', 0.72, 'สัปดาห์ 2', isHighlight: false),
-                      _buildBarCol('11.2k', 0.65, 'สัปดาห์ 3', isHighlight: false),
-                      _buildBarCol('15.2k', 0.95, 'สัปดาห์ 4', isHighlight: true),
+                      _buildBarCol(
+                        '9.8k',
+                        0.55,
+                        'สัปดาห์ 1',
+                        isHighlight: false,
+                      ),
+                      _buildBarCol(
+                        '12.4k',
+                        0.72,
+                        'สัปดาห์ 2',
+                        isHighlight: false,
+                      ),
+                      _buildBarCol(
+                        '11.2k',
+                        0.65,
+                        'สัปดาห์ 3',
+                        isHighlight: false,
+                      ),
+                      _buildBarCol(
+                        '15.2k',
+                        0.95,
+                        'สัปดาห์ 4',
+                        isHighlight: true,
+                      ),
                     ],
                   ),
                 ],
@@ -94,11 +143,29 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
             // 3 Stat Boxes (Matches 3.5_Owner_Stats.png)
             Row(
               children: [
-                Expanded(child: _buildStatItem('ผู้ใช้บริการ', '312 คัน', AppTheme.textPrimary)),
+                Expanded(
+                  child: _buildStatItem(
+                    'ผู้ใช้บริการ',
+                    '312 คัน',
+                    AppTheme.textPrimary,
+                  ),
+                ),
                 const SizedBox(width: 10),
-                Expanded(child: _buildStatItem('ไม่มาตามนัด', '6 ครั้ง', Colors.redAccent)),
+                Expanded(
+                  child: _buildStatItem(
+                    'ไม่มาตามนัด',
+                    '6 ครั้ง',
+                    Colors.redAccent,
+                  ),
+                ),
                 const SizedBox(width: 10),
-                Expanded(child: _buildStatItem('คะแนนเฉลี่ย', '4.8 ★', const Color(0xFFD48806))),
+                Expanded(
+                  child: _buildStatItem(
+                    'คะแนนเฉลี่ย',
+                    '4.8 ★',
+                    const Color(0xFFD48806),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 18),
@@ -110,13 +177,24 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 3)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('ช่วงเวลาที่มีผู้ใช้บริการมาก', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                  const Text(
+                    'ช่วงเวลาที่มีผู้ใช้บริการมาก',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   _buildTimeBar('08:00–10:00', 0.92, '92', isTop: true),
                   _buildTimeBar('10:00–12:00', 0.74, '74', isTop: false),
@@ -147,7 +225,13 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
             color: isSelected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected
-                ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 : null,
           ),
           alignment: Alignment.center,
@@ -164,10 +248,22 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
     );
   }
 
-  Widget _buildBarCol(String valText, double heightRatio, String label, {required bool isHighlight}) {
+  Widget _buildBarCol(
+    String valText,
+    double heightRatio,
+    String label, {
+    required bool isHighlight,
+  }) {
     return Column(
       children: [
-        Text(valText, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted, fontWeight: FontWeight.w500)),
+        Text(
+          valText,
+          style: const TextStyle(
+            fontSize: 11,
+            color: AppTheme.textMuted,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         const SizedBox(height: 6),
         Container(
           width: 52,
@@ -185,7 +281,10 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(label, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+        ),
       ],
     );
   }
@@ -197,25 +296,54 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
         children: [
-          Text(title, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted), maxLines: 1),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+            maxLines: 1,
+          ),
           const SizedBox(height: 4),
-          Text(val, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: valColor)),
+          Text(
+            val,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: valColor,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTimeBar(String time, double ratio, String count, {required bool isTop}) {
+  Widget _buildTimeBar(
+    String time,
+    double ratio,
+    String count, {
+    required bool isTop,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          SizedBox(width: 85, child: Text(time, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary))),
+          SizedBox(
+            width: 85,
+            child: Text(
+              time,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppTheme.textSecondary,
+              ),
+            ),
+          ),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
@@ -223,15 +351,23 @@ class _OwnerStatsScreenState extends State<OwnerStatsScreen> {
                 value: ratio,
                 minHeight: 12,
                 backgroundColor: const Color(0xFFF0F4FA),
-                valueColor: AlwaysStoppedAnimation<Color>(isTop ? AppTheme.primaryColor : const Color(0xFF85A5FF)),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  isTop ? AppTheme.primaryColor : const Color(0xFF85A5FF),
+                ),
               ),
             ),
           ),
           const SizedBox(width: 12),
-          SizedBox(width: 24, child: Text(count, textAlign: TextAlign.right, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold))),
+          SizedBox(
+            width: 24,
+            child: Text(
+              count,
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
   }
 }
-

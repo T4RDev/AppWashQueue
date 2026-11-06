@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -65,7 +66,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
     if (!mounted) return;
     if (res.success) {
-      AppSnackBar.showSuccess(context, 'ส่งคะแนนรีวิวสำเร็จ ขอบคุณสำหรับข้อเสนอแนะ! ⭐');
+      AppSnackBar.showSuccess(
+        context,
+        'ส่งคะแนนรีวิวสำเร็จ ขอบคุณสำหรับข้อเสนอแนะ! ⭐',
+      );
       Navigator.pop(context, true);
     } else {
       AppSnackBar.showError(context, res.message);
@@ -77,7 +81,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('ให้คะแนนร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'ให้คะแนนร้าน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -98,23 +105,38 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
-                  BoxShadow(color: const Color(0xFF0072FF).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6)),
+                  BoxShadow(
+                    color: const Color(0xFF0072FF).withValues(alpha: 0.3),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
                 ],
               ),
-              child: const Icon(Icons.storefront, color: Colors.white, size: 48),
+              child: const Icon(
+                Icons.storefront,
+                color: Colors.white,
+                size: 48,
+              ),
             ),
             const SizedBox(height: 16),
 
             // Shop Name & Service (Matches 2.6_Review.png)
             Text(
               widget.shopName,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
             Text(
               'ใช้บริการเมื่อ ${widget.bookingDate} • ${widget.serviceName}',
-              style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppTheme.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -132,7 +154,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 children: const [
                   Icon(Icons.check, size: 16, color: Color(0xFF389E0D)),
                   SizedBox(width: 4),
-                  Text('บริการเสร็จสิ้น', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF389E0D))),
+                  Text(
+                    'บริการเสร็จสิ้น',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF389E0D),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -145,14 +174,22 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 3)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
                 ],
               ),
               child: Column(
                 children: [
                   const Text(
                     'คุณพอใจกับบริการแค่ไหน?',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -168,7 +205,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           child: Icon(
                             Icons.star_rounded,
                             size: 44,
-                            color: starVal <= _rating ? const Color(0xFFFFB800) : Colors.grey.shade200,
+                            color: starVal <= _rating
+                                ? const Color(0xFFFFB800)
+                                : Colors.grey.shade200,
                           ),
                         ),
                       );
@@ -178,7 +217,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
                   Text(
                     _ratingLabel,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryColor,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -189,8 +232,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       hintText: 'เขียนความคิดเห็นเพิ่มเติม (ถ้ามี)...',
                       filled: true,
                       fillColor: Colors.grey.shade50,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.grey.shade200)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: Colors.grey.shade200)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: Colors.grey.shade200),
+                      ),
                     ),
                   ),
                 ],
@@ -208,12 +257,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Icon(Icons.info_outline, size: 18, color: AppTheme.primaryColor),
+                  Icon(
+                    Icons.info_outline,
+                    size: 18,
+                    color: AppTheme.primaryColor,
+                  ),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'ให้คะแนนได้ 1 ครั้งต่อการจอง เฉพาะการจองที่บริการเสร็จสิ้นแล้ว',
-                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ),
                 ],
@@ -227,13 +283,28 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 elevation: 2,
               ),
               onPressed: _isSubmitting ? null : _handleSubmit,
               child: _isSubmitting
-                  ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('ส่งคะแนน', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text(
+                      'ส่งคะแนน',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ],
         ),
@@ -241,4 +312,3 @@ class _ReviewScreenState extends State<ReviewScreen> {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../core/app_theme.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
@@ -29,7 +30,10 @@ class WelcomeScreen extends StatelessWidget {
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 20.0,
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -43,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
                                 width: 190,
                                 height: 190,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.08),
+                                  color: Colors.white.withValues(alpha: 0.08),
                                   shape: BoxShape.circle,
                                 ),
                                 alignment: Alignment.center,
@@ -51,9 +55,14 @@ class WelcomeScreen extends StatelessWidget {
                                   width: 140,
                                   height: 140,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.12),
+                                    color: Colors.white.withValues(alpha: 0.12),
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      width: 1.5,
+                                    ),
                                   ),
                                   alignment: Alignment.center,
                                   child: const Icon(
@@ -85,13 +94,15 @@ class WelcomeScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 8),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
                                 child: Text(
                                   'ค้นหาร้านใกล้คุณ เช็คคิวว่างแบบเรียลไทม์\nจองล่วงหน้า และชำระด้วยเครดิตใน Wallet',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.white.withOpacity(0.85),
+                                    color: Colors.white.withValues(alpha: 0.85),
                                     height: 1.4,
                                   ),
                                 ),
@@ -115,7 +126,9 @@ class WelcomeScreen extends StatelessWidget {
                                     width: 6,
                                     height: 6,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.4),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.4,
+                                      ),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -124,7 +137,9 @@ class WelcomeScreen extends StatelessWidget {
                                     width: 6,
                                     height: 6,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.4),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.4,
+                                      ),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -150,12 +165,17 @@ class WelcomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginScreen(),
+                                    ),
                                   );
                                 },
                                 child: const Text(
                                   'เข้าสู่ระบบ',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -164,7 +184,10 @@ class WelcomeScreen extends StatelessWidget {
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   minimumSize: const Size(double.infinity, 52),
-                                  side: const BorderSide(color: Colors.white, width: 1.5),
+                                  side: const BorderSide(
+                                    color: Colors.white,
+                                    width: 1.5,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
@@ -172,12 +195,17 @@ class WelcomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                                    MaterialPageRoute(
+                                      builder: (_) => const RegisterScreen(),
+                                    ),
                                   );
                                 },
                                 child: const Text(
                                   'สมัครสมาชิก',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -186,12 +214,20 @@ class WelcomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const MainNavigationScreen(isGuest: true)),
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const MainNavigationScreen(
+                                            isGuest: true,
+                                          ),
+                                    ),
                                   );
                                 },
                                 child: Text(
                                   'ค้นหาร้านล้างรถโดยไม่ต้องเข้าสู่ระบบ',
-                                  style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13),
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 13,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -200,16 +236,26 @@ class WelcomeScreen extends StatelessWidget {
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const RegisterShopScreen()),
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const RegisterShopScreen(),
+                                    ),
                                   );
                                 },
                                 borderRadius: BorderRadius.circular(24),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.18),
+                                    color: Colors.white.withValues(alpha: 0.18),
                                     borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(color: Colors.white.withOpacity(0.35)),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.35,
+                                      ),
+                                    ),
                                   ),
                                   child: const Text(
                                     'คุณเป็นเจ้าของร้านคาร์แคร์? สมัครเปิดร้านกับเรา',

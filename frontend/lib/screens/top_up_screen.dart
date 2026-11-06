@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../providers/wallet_provider.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
@@ -116,10 +118,16 @@ class _TopUpScreenState extends State<TopUpScreen> {
 
     if (!mounted) return;
     if (success) {
-      AppSnackBar.showSuccess(context, 'เติมเงินเข้ากระเป๋า ${_selectedAmount.toStringAsFixed(0)} เครดิตสำเร็จ!');
+      AppSnackBar.showSuccess(
+        context,
+        'เติมเงินเข้ากระเป๋า ${_selectedAmount.toStringAsFixed(0)} เครดิตสำเร็จ!',
+      );
       Navigator.pop(context);
     } else {
-      AppSnackBar.showError(context, walletProvider.errorMessage ?? 'เติมเงินไม่สำเร็จ');
+      AppSnackBar.showError(
+        context,
+        walletProvider.errorMessage ?? 'เติมเงินไม่สำเร็จ',
+      );
     }
   }
 
@@ -128,7 +136,10 @@ class _TopUpScreenState extends State<TopUpScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('เติมเงินเข้า Wallet', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'เติมเงินเข้า Wallet',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -143,17 +154,28 @@ class _TopUpScreenState extends State<TopUpScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('จำนวนเงินที่ต้องการเติม', style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
+                  const Text(
+                    'จำนวนเงินที่ต้องการเติม',
+                    style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                  ),
                   const SizedBox(height: 6),
                   Text(
                     '฿${_selectedAmount.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -170,14 +192,18 @@ class _TopUpScreenState extends State<TopUpScreen> {
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppTheme.primaryColor : const Color(0xFFF0F4FA),
+                                color: isSelected
+                                    ? AppTheme.primaryColor
+                                    : const Color(0xFFF0F4FA),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               alignment: Alignment.center,
                               child: Text(
                                 amt >= 1000 ? '1,000' : amt.toStringAsFixed(0),
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : AppTheme.textPrimary,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppTheme.textPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
@@ -192,7 +218,10 @@ class _TopUpScreenState extends State<TopUpScreen> {
 
                   Text(
                     'จะได้รับ ${_selectedAmount.toStringAsFixed(0)} เครดิต (1 บาท = 1 เครดิต)',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -212,14 +241,29 @@ class _TopUpScreenState extends State<TopUpScreen> {
                 children: [
                   Row(
                     children: const [
-                      Icon(Icons.access_time_filled, color: Color(0xFFD46B08), size: 18),
+                      Icon(
+                        Icons.access_time_filled,
+                        color: Color(0xFFD46B08),
+                        size: 18,
+                      ),
                       SizedBox(width: 8),
-                      Text('แนบสลิปภายใน', style: TextStyle(color: Color(0xFFD46B08), fontSize: 13, fontWeight: FontWeight.w500)),
+                      Text(
+                        'แนบสลิปภายใน',
+                        style: TextStyle(
+                          color: Color(0xFFD46B08),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                   Text(
                     _timerFormatted,
-                    style: const TextStyle(color: Color(0xFFD46B08), fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Color(0xFFD46B08),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -233,18 +277,29 @@ class _TopUpScreenState extends State<TopUpScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Column(
                 children: [
                   const Text(
                     'สแกนชำระผ่าน PromptPay',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   if (_isLoadingQr)
-                    const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()))
+                    const SizedBox(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
                   else if (_qrBytes != null)
                     Container(
                       padding: const EdgeInsets.all(12),
@@ -263,7 +318,11 @@ class _TopUpScreenState extends State<TopUpScreen> {
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Icon(Icons.qr_code_2, size: 120, color: AppTheme.primaryColor),
+                      child: const Icon(
+                        Icons.qr_code_2,
+                        size: 120,
+                        color: AppTheme.primaryColor,
+                      ),
                     ),
                   const SizedBox(height: 14),
                   const Text(
@@ -279,7 +338,11 @@ class _TopUpScreenState extends State<TopUpScreen> {
             // Slip Upload Card (Matches 2.9_AddWalletwithQR.png)
             const Text(
               'แนบสลิปการโอนเงิน',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary,
+              ),
             ),
             const SizedBox(height: 8),
 
@@ -299,7 +362,11 @@ class _TopUpScreenState extends State<TopUpScreen> {
                         color: Color(0xFFF6FFED),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.check, color: Color(0xFF52C41A), size: 18),
+                      child: const Icon(
+                        Icons.check,
+                        color: Color(0xFF52C41A),
+                        size: 18,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -307,19 +374,31 @@ class _TopUpScreenState extends State<TopUpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _slipFile!.name.isNotEmpty ? _slipFile!.name : 'slip_20261026.jpg',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                            _slipFile!.name.isNotEmpty
+                                ? _slipFile!.name
+                                : 'slip_20261026.jpg',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
                           ),
                           const SizedBox(height: 2),
                           const Text(
                             'ระบบตรวจสอบสลิปแล้ว • ยอดเงินถูกต้อง',
-                            style: TextStyle(fontSize: 11, color: Color(0xFF389E0D)),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF389E0D),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.close,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                       onPressed: () => setState(() {
                         _slipFile = null;
                         _isSlipVerified = false;
@@ -337,14 +416,26 @@ class _TopUpScreenState extends State<TopUpScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      style: BorderStyle.solid,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.add_photo_alternate_outlined, color: AppTheme.primaryColor),
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        color: AppTheme.primaryColor,
+                      ),
                       SizedBox(width: 8),
-                      Text('แตะเพื่อแนบสลิปหลักฐานการโอนเงิน', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                      Text(
+                        'แตะเพื่อแนบสลิปหลักฐานการโอนเงิน',
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -357,15 +448,31 @@ class _TopUpScreenState extends State<TopUpScreen> {
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 elevation: 2,
               ),
-              onPressed: _isConfirming ? null : (_isSlipVerified ? _handleConfirm : _pickSlip),
+              onPressed: _isConfirming
+                  ? null
+                  : (_isSlipVerified ? _handleConfirm : _pickSlip),
               child: _isConfirming
-                  ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
                   : Text(
-                      _isSlipVerified ? 'ยืนยันเติมเงิน ${_selectedAmount.toStringAsFixed(0)} เครดิต' : 'แนบสลิปเพื่อยืนยัน',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      _isSlipVerified
+                          ? 'ยืนยันเติมเงิน ${_selectedAmount.toStringAsFixed(0)} เครดิต'
+                          : 'แนบสลิปเพื่อยืนยัน',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
             ),
             const SizedBox(height: 10),
@@ -382,4 +489,3 @@ class _TopUpScreenState extends State<TopUpScreen> {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -73,7 +74,10 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
       return {'day_of_week': k, 'is_active': isActive};
     }).toList();
 
-    final res = await _api.put(ApiConstants.ownerOperatingDays, body: {'days': updatedDays});
+    final res = await _api.put(
+      ApiConstants.ownerOperatingDays,
+      body: {'days': updatedDays},
+    );
     if (!mounted) return;
     if (res.success) {
       AppSnackBar.showSuccess(context, 'บันทึกวันเปิดทำการแล้ว');
@@ -84,7 +88,10 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
   }
 
   Future<void> _toggleSlot(int slotId, bool currentActive) async {
-    final res = await _api.put('${ApiConstants.ownerTimeSlots}/$slotId', body: {'is_active': !currentActive});
+    final res = await _api.put(
+      '${ApiConstants.ownerTimeSlots}/$slotId',
+      body: {'is_active': !currentActive},
+    );
     if (!mounted) return;
     if (res.success) {
       _fetchData();
@@ -107,27 +114,52 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: startCtrl, decoration: const InputDecoration(labelText: 'เวลาเริ่ม (เช่น 08:00)')),
+              TextField(
+                controller: startCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'เวลาเริ่ม (เช่น 08:00)',
+                ),
+              ),
               const SizedBox(height: 10),
-              TextField(controller: endCtrl, decoration: const InputDecoration(labelText: 'เวลาสิ้นสุด (เช่น 10:00)')),
+              TextField(
+                controller: endCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'เวลาสิ้นสุด (เช่น 10:00)',
+                ),
+              ),
               const SizedBox(height: 10),
-              TextField(controller: capCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'ความจุคิวรับได้ (คัน)')),
+              TextField(
+                controller: capCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'ความจุคิวรับได้ (คัน)',
+                ),
+              ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: vehicleType,
+                initialValue: vehicleType,
                 decoration: const InputDecoration(labelText: 'ประเภทรถที่รับ'),
                 items: const [
-                  DropdownMenuItem(value: 'all', child: Text('ทุกประเภท (All)')),
+                  DropdownMenuItem(
+                    value: 'all',
+                    child: Text('ทุกประเภท (All)'),
+                  ),
                   DropdownMenuItem(value: 'car', child: Text('รถเก๋ง / Sedan')),
                   DropdownMenuItem(value: 'suv', child: Text('SUV / กระบะ')),
-                  DropdownMenuItem(value: 'motorcycle', child: Text('มอเตอร์ไซค์')),
+                  DropdownMenuItem(
+                    value: 'motorcycle',
+                    child: Text('มอเตอร์ไซค์'),
+                  ),
                 ],
                 onChanged: (v) => setDState(() => vehicleType = v ?? 'all'),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('ยกเลิก')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('ยกเลิก'),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(minimumSize: const Size(90, 40)),
               onPressed: () async {
@@ -170,24 +202,39 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'ชื่อบริการ (เช่น ล้างอัดฉีด)')),
+              TextField(
+                controller: nameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'ชื่อบริการ (เช่น ล้างอัดฉีด)',
+                ),
+              ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: vehicleType,
+                initialValue: vehicleType,
                 decoration: const InputDecoration(labelText: 'ประเภทรถ'),
                 items: const [
                   DropdownMenuItem(value: 'car', child: Text('รถยนต์ (Car)')),
                   DropdownMenuItem(value: 'suv', child: Text('รถ SUV / กระบะ')),
-                  DropdownMenuItem(value: 'motorcycle', child: Text('มอเตอร์ไซค์')),
+                  DropdownMenuItem(
+                    value: 'motorcycle',
+                    child: Text('มอเตอร์ไซค์'),
+                  ),
                 ],
                 onChanged: (v) => setDState(() => vehicleType = v ?? 'car'),
               ),
               const SizedBox(height: 10),
-              TextField(controller: priceCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'ราคา (บาท)')),
+              TextField(
+                controller: priceCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'ราคา (บาท)'),
+              ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('ยกเลิก')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('ยกเลิก'),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(minimumSize: const Size(90, 40)),
               onPressed: () async {
@@ -221,7 +268,10 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('วัน สล็อต & ราคา', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'วัน สล็อต & ราคา',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: _isLoading
@@ -237,8 +287,21 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
-                        Text('วันให้บริการ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
-                        Text('แตะเพื่อเปิด/ปิด', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                        Text(
+                          'วันให้บริการ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          'แตะเพื่อเปิด/ปิด',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textMuted,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -254,18 +317,33 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                             height: 44,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: active ? AppTheme.primaryColor : Colors.white,
-                              border: Border.all(color: active ? AppTheme.primaryColor : Colors.grey.shade300, width: 1.5),
+                              color: active
+                                  ? AppTheme.primaryColor
+                                  : Colors.white,
+                              border: Border.all(
+                                color: active
+                                    ? AppTheme.primaryColor
+                                    : Colors.grey.shade300,
+                                width: 1.5,
+                              ),
                               boxShadow: [
                                 if (active)
-                                  BoxShadow(color: AppTheme.primaryColor.withOpacity(0.3), blurRadius: 6, offset: const Offset(0, 2)),
+                                  BoxShadow(
+                                    color: AppTheme.primaryColor.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
                               ],
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               d['label']!,
                               style: TextStyle(
-                                color: active ? Colors.white : Colors.grey.shade600,
+                                color: active
+                                    ? Colors.white
+                                    : Colors.grey.shade600,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -280,7 +358,14 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('สล็อตการให้บริการ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                        const Text(
+                          'สล็อตการให้บริการ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                         TextButton.icon(
                           onPressed: _showAddTimeSlotDialog,
                           icon: const Icon(Icons.add, size: 18),
@@ -292,8 +377,16 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                     if (_timeSlots.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-                        child: const Center(child: Text('ยังไม่มีการกำหนดสล็อตเวลา', style: TextStyle(color: AppTheme.textSecondary))),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'ยังไม่มีการกำหนดสล็อตเวลา',
+                            style: TextStyle(color: AppTheme.textSecondary),
+                          ),
+                        ),
                       )
                     else
                       ..._timeSlots.map((s) => _buildSlotCard(s)),
@@ -304,7 +397,14 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('ราคาบริการ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                        const Text(
+                          'ราคาบริการ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                         TextButton.icon(
                           onPressed: _showAddServiceDialog,
                           icon: const Icon(Icons.add, size: 18),
@@ -336,7 +436,11 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
@@ -349,18 +453,29 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                   children: [
                     Text(
                       '$startTime – $endTime',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFE6F4FF),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         'รับได้ $capacity คัน',
-                        style: const TextStyle(fontSize: 11, color: AppTheme.primaryColor, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -368,11 +483,18 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.directions_car, size: 14, color: AppTheme.textMuted),
+                    const Icon(
+                      Icons.directions_car,
+                      size: 14,
+                      color: AppTheme.textMuted,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       vehicleType == 'all' ? 'รับรถทุกประเภท' : vehicleType,
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -381,13 +503,19 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
           ),
           Switch(
             value: isActive,
-            activeColor: const Color(0xFF00B96B),
+            activeThumbColor: const Color(0xFF00B96B),
             onChanged: (val) => _toggleSlot(slotId, isActive),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppTheme.error, size: 20),
+            icon: const Icon(
+              Icons.delete_outline,
+              color: AppTheme.error,
+              size: 20,
+            ),
             onPressed: () async {
-              final res = await _api.delete('${ApiConstants.ownerTimeSlots}/$slotId');
+              final res = await _api.delete(
+                '${ApiConstants.ownerTimeSlots}/$slotId',
+              );
               if (res.success) {
                 _fetchData();
               }
@@ -402,8 +530,16 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
     if (_services.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-        child: const Center(child: Text('ยังไม่มีรายการบริการ', style: TextStyle(color: AppTheme.textSecondary))),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Text(
+            'ยังไม่มีรายการบริการ',
+            style: TextStyle(color: AppTheme.textSecondary),
+          ),
+        ),
       );
     }
 
@@ -412,7 +548,11 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -422,13 +562,47 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: const BoxDecoration(
               color: Color(0xFFFAFAFA),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
             ),
             child: Row(
               children: const [
-                Expanded(flex: 3, child: Text('บริการ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textSecondary))),
-                Expanded(flex: 2, child: Text('ประเภท', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textSecondary))),
-                Expanded(flex: 2, child: Text('ราคา', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textSecondary))),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'บริการ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    'ประเภท',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    'ราคา',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
                 SizedBox(width: 32),
               ],
             ),
@@ -440,7 +614,7 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _services.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (ctx, i) {
               final s = _services[i];
               final serviceId = s['id'] ?? 0;
@@ -449,29 +623,67 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
               final price = (s['price'] ?? 0).toString();
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Row(
                   children: [
-                    Expanded(flex: 3, child: Text(name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14))),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                     Expanded(
                       flex: 2,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          vt == 'car' ? 'รถยนต์' : vt == 'suv' ? 'SUV' : 'มอไซค์',
-                          style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                          vt == 'car'
+                              ? 'รถยนต์'
+                              : vt == 'suv'
+                              ? 'SUV'
+                              : 'มอไซค์',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                       ),
                     ),
-                    Expanded(flex: 2, child: Text('฿$price', textAlign: TextAlign.right, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        '฿$price',
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 16, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.close,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       onPressed: () async {
-                        final res = await _api.delete('${ApiConstants.ownerServices}/$serviceId');
+                        final res = await _api.delete(
+                          '${ApiConstants.ownerServices}/$serviceId',
+                        );
                         if (res.success) _fetchData();
                       },
                     ),
@@ -485,4 +697,3 @@ class _OwnerSlotsTabState extends State<OwnerSlotsTab> {
     );
   }
 }
-

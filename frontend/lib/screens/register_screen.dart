@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_provider.dart';
 import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
@@ -51,9 +52,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         {
           'plate_number': _plateController.text.trim(),
           'vehicle_type': _selectedVehicleType,
-          'brand': _brandController.text.trim().isEmpty ? '-' : _brandController.text.trim(),
-          'model': _modelController.text.trim().isEmpty ? '-' : _modelController.text.trim(),
-        }
+          'brand': _brandController.text.trim().isEmpty
+              ? '-'
+              : _brandController.text.trim(),
+          'model': _modelController.text.trim().isEmpty
+              ? '-'
+              : _modelController.text.trim(),
+        },
       ];
     }
 
@@ -69,14 +74,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!mounted) return;
 
     if (success) {
-      AppSnackBar.showSuccess(context, 'สมัครสมาชิกสำเร็จ ยินดีต้อนรับสู่ WashQ!');
+      AppSnackBar.showSuccess(
+        context,
+        'สมัครสมาชิกสำเร็จ ยินดีต้อนรับสู่ WashQ!',
+      );
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
         (route) => false,
       );
     } else {
-      AppSnackBar.showError(context, authProvider.errorMessage ?? 'สมัครสมาชิกไม่สำเร็จ');
+      AppSnackBar.showError(
+        context,
+        authProvider.errorMessage ?? 'สมัครสมาชิกไม่สำเร็จ',
+      );
     }
   }
 
@@ -96,7 +107,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const Text(
                   'สร้างบัญชีสมาชิกใหม่ 🚗',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 const Text(
@@ -112,7 +127,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'ชื่อ - นามสกุล',
                     prefixIcon: Icon(Icons.person_outline),
                   ),
-                  validator: (v) => v == null || v.trim().isEmpty ? 'กรุณากรอกชื่อ-สกุล' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'กรุณากรอกชื่อ-สกุล'
+                      : null,
                 ),
                 const SizedBox(height: 14),
 
@@ -140,7 +157,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'เบอร์โทรศัพท์ (ไม่ซ้ำกัน)',
                     prefixIcon: Icon(Icons.phone_outlined),
                   ),
-                  validator: (v) => v == null || v.trim().isEmpty ? 'กรุณากรอกเบอร์โทรศัพท์' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'กรุณากรอกเบอร์โทรศัพท์'
+                      : null,
                 ),
                 const SizedBox(height: 14),
 
@@ -152,11 +171,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'รหัสผ่าน (Password)',
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
-                  validator: (v) => v == null || v.length < 6 ? 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' : null,
+                  validator: (v) => v == null || v.length < 6
+                      ? 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -172,17 +198,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.directions_car, color: AppTheme.primaryColor),
+                                Icon(
+                                  Icons.directions_car,
+                                  color: AppTheme.primaryColor,
+                                ),
                                 SizedBox(width: 8),
                                 Text(
                                   'ข้อมูลรถของคุณ (เพิ่มได้ภายหลัง)',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ],
                             ),
                             Switch(
                               value: _includeVehicle,
-                              onChanged: (val) => setState(() => _includeVehicle = val),
+                              onChanged: (val) =>
+                                  setState(() => _includeVehicle = val),
                             ),
                           ],
                         ),
@@ -197,18 +230,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 12),
                           DropdownButtonFormField<String>(
-                            value: _selectedVehicleType,
+                            initialValue: _selectedVehicleType,
                             decoration: const InputDecoration(
                               labelText: 'ประเภทรถ',
                               prefixIcon: Icon(Icons.category_outlined),
                             ),
                             items: const [
-                              DropdownMenuItem(value: 'car', child: Text('รถยนต์')),
-                              DropdownMenuItem(value: 'suv', child: Text('รถ SUV')),
-                              DropdownMenuItem(value: 'motorcycle', child: Text('รถจักรยานยนต์')),
+                              DropdownMenuItem(
+                                value: 'car',
+                                child: Text('รถยนต์'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'suv',
+                                child: Text('รถ SUV'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'motorcycle',
+                                child: Text('รถจักรยานยนต์'),
+                              ),
                             ],
                             onChanged: (val) {
-                              if (val != null) setState(() => _selectedVehicleType = val);
+                              if (val != null)
+                                setState(() => _selectedVehicleType = val);
                             },
                           ),
                           const SizedBox(height: 12),
@@ -217,14 +260,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Expanded(
                                 child: TextFormField(
                                   controller: _brandController,
-                                  decoration: const InputDecoration(labelText: 'ยี่ห้อ (Brand)'),
+                                  decoration: const InputDecoration(
+                                    labelText: 'ยี่ห้อ (Brand)',
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: TextFormField(
                                   controller: _modelController,
-                                  decoration: const InputDecoration(labelText: 'รุ่น (Model)'),
+                                  decoration: const InputDecoration(
+                                    labelText: 'รุ่น (Model)',
+                                  ),
                                 ),
                               ),
                             ],
@@ -243,7 +290,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ? const SizedBox(
                           height: 24,
                           width: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : const Text('ยืนยันการสมัครสมาชิก'),
                 ),
@@ -253,17 +303,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('มีบัญชีอยู่แล้ว? ', style: TextStyle(color: AppTheme.textSecondary)),
+                    const Text(
+                      'มีบัญชีอยู่แล้ว? ',
+                      style: TextStyle(color: AppTheme.textSecondary),
+                    ),
                     GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
                         );
                       },
                       child: const Text(
                         'เข้าสู่ระบบ',
-                        style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -276,4 +334,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-

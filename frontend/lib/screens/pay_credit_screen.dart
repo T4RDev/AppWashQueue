@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/booking_provider.dart';
 import '../providers/wallet_provider.dart';
 import '../core/app_theme.dart';
@@ -70,7 +72,10 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
       } else {
         timer.cancel();
         if (mounted) {
-          AppSnackBar.showError(context, 'หมดเวลาทำรายการ ระบบยกเลิกการจองอัตโนมัติ');
+          AppSnackBar.showError(
+            context,
+            'หมดเวลาทำรายการ ระบบยกเลิกการจองอัตโนมัติ',
+          );
           Navigator.pop(context);
         }
       }
@@ -85,11 +90,17 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
 
   Future<void> _handlePayment() async {
     final walletProvider = Provider.of<WalletProvider>(context, listen: false);
-    final bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+    final bookingProvider = Provider.of<BookingProvider>(
+      context,
+      listen: false,
+    );
     final balance = walletProvider.wallet?.balance ?? 0.0;
 
     if (balance < widget.servicePrice) {
-      AppSnackBar.showError(context, 'เครดิตไม่เพียงพอ กรุณาเติมเงินเข้า Wallet');
+      AppSnackBar.showError(
+        context,
+        'เครดิตไม่เพียงพอ กรุณาเติมเงินเข้า Wallet',
+      );
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const TopUpScreen()),
@@ -112,10 +123,16 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
 
     if (!mounted) return;
     if (result != null) {
-      AppSnackBar.showSuccess(context, 'จองคิวและชำระเครดิตสำเร็จเรียบร้อย! 🚗✨');
+      AppSnackBar.showSuccess(
+        context,
+        'จองคิวและชำระเครดิตสำเร็จเรียบร้อย! 🚗✨',
+      );
       Navigator.popUntil(context, (route) => route.isFirst);
     } else {
-      AppSnackBar.showError(context, bookingProvider.errorMessage ?? 'การชำระเงินไม่สำเร็จ');
+      AppSnackBar.showError(
+        context,
+        bookingProvider.errorMessage ?? 'การชำระเงินไม่สำเร็จ',
+      );
     }
   }
 
@@ -130,7 +147,10 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('ชำระด้วยเครดิต', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'ชำระด้วยเครดิต',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -149,7 +169,11 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                 ),
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
-                  BoxShadow(color: const Color(0xFFFF5E36).withOpacity(0.3), blurRadius: 14, offset: const Offset(0, 5)),
+                  BoxShadow(
+                    color: const Color(0xFFFF5E36).withValues(alpha: 0.3),
+                    blurRadius: 14,
+                    offset: const Offset(0, 5),
+                  ),
                 ],
               ),
               child: Row(
@@ -160,12 +184,21 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                       children: [
                         const Text(
                           'เหลือเวลาชำระเครดิต',
-                          style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           _timerFormatted,
-                          style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.5,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         const Text(
@@ -179,10 +212,14 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                     width: 58,
                     height: 58,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.access_time_filled, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.access_time_filled,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                 ],
               ),
@@ -196,7 +233,11 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Column(
@@ -210,36 +251,70 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                           color: AppTheme.primaryColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.storefront, color: Colors.white, size: 24),
+                        child: const Icon(
+                          Icons.storefront,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.shopName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              widget.shopName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                             const SizedBox(height: 2),
-                            Text(widget.shopAddress, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            Text(
+                              widget.shopAddress,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppTheme.textMuted,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF7E6),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Text('รอชำระ', style: TextStyle(color: Color(0xFFD46B08), fontSize: 11, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'รอชำระ',
+                          style: TextStyle(
+                            color: Color(0xFFD46B08),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const Divider(height: 24),
 
-                  _buildDetailRow('รถ', '${widget.vehiclePlate} • ${widget.vehicleType}'),
+                  _buildDetailRow(
+                    'รถ',
+                    '${widget.vehiclePlate} • ${widget.vehicleType}',
+                  ),
                   const SizedBox(height: 8),
                   _buildDetailRow('บริการ', widget.serviceName),
                   const SizedBox(height: 8),
-                  _buildDetailRow('วัน / สล็อต', '${widget.bookingDate} • ${widget.slotTimeRange} น.'),
+                  _buildDetailRow(
+                    'วัน / สล็อต',
+                    '${widget.bookingDate} • ${widget.slotTimeRange} น.',
+                  ),
                 ],
               ),
             ),
@@ -252,7 +327,11 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Column(
@@ -260,27 +339,61 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('เครดิตคงเหลือ', style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
-                      Text('${balance.toStringAsFixed(0)} เครดิต', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      const Text(
+                        'เครดิตคงเหลือ',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '${balance.toStringAsFixed(0)} เครดิต',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('ค่าบริการ', style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
-                      Text('- ${price.toStringAsFixed(0)} เครดิต', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 14)),
+                      const Text(
+                        'ค่าบริการ',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '- ${price.toStringAsFixed(0)} เครดิต',
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
                   const Divider(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('คงเหลือหลังชำระ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary)),
+                      const Text(
+                        'คงเหลือหลังชำระ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
                       Text(
                         '${balanceAfter.toStringAsFixed(0)} เครดิต',
                         style: TextStyle(
-                          color: isEnough ? AppTheme.primaryColor : Colors.redAccent,
+                          color: isEnough
+                              ? AppTheme.primaryColor
+                              : Colors.redAccent,
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                         ),
@@ -303,12 +416,20 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Icon(Icons.shield_outlined, color: AppTheme.primaryColor, size: 20),
+                  Icon(
+                    Icons.shield_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 20,
+                  ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'ระบบจะพักเครดิตไว้จนกว่าบริการจะเสร็จสิ้น จึงโอนให้ร้าน ยกเลิกล่วงหน้าอย่างน้อย 24 ชม. รับเครดิตคืนเต็มจำนวน',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF1D39C4), height: 1.35),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF1D39C4),
+                        height: 1.35,
+                      ),
                     ),
                   ),
                 ],
@@ -319,23 +440,39 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
             // Pay Button (Matches 2.4_Pay_Credit.png)
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: isEnough ? AppTheme.primaryColor : Colors.orangeAccent,
+                backgroundColor: isEnough
+                    ? AppTheme.primaryColor
+                    : Colors.orangeAccent,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 elevation: 2,
               ),
               onPressed: _isPaying ? null : _handlePayment,
               child: _isPaying
-                  ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.account_balance_wallet, size: 20),
                         const SizedBox(width: 8),
                         Text(
-                          isEnough ? 'ชำระ ${price.toStringAsFixed(0)} เครดิต' : 'เครดิตไม่พอ • เติมเงินเพื่อชำระ',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          isEnough
+                              ? 'ชำระ ${price.toStringAsFixed(0)} เครดิต'
+                              : 'เครดิตไม่พอ • เติมเงินเพื่อชำระ',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -350,7 +487,13 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
                     MaterialPageRoute(builder: (_) => const TopUpScreen()),
                   ).then((_) => walletProvider.fetchMyWallet());
                 },
-                child: const Text('เครดิตไม่พอ? เติมเงินเข้า Wallet', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w600)),
+                child: const Text(
+                  'เครดิตไม่พอ? เติมเงินเข้า Wallet',
+                  style: TextStyle(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
           ],
@@ -363,8 +506,18 @@ class _PayCreditScreenState extends State<PayCreditScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: AppTheme.textMuted, fontSize: 13)),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppTheme.textPrimary)),
+        Text(
+          label,
+          style: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: AppTheme.textPrimary,
+          ),
+        ),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -53,7 +54,10 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
           onRefresh: _fetchOverview,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -64,13 +68,29 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('ผู้ดูแลระบบ', style: TextStyle(fontSize: 13, color: AppTheme.textMuted)),
+                        Text(
+                          'ผู้ดูแลระบบ',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textMuted,
+                          ),
+                        ),
                         SizedBox(height: 2),
-                        Text('ภาพรวมแพลตฟอร์ม', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                        Text(
+                          'ภาพรวมแพลตฟอร์ม',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                       ],
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -78,9 +98,19 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                       ),
                       child: Row(
                         children: const [
-                          Text('พ.ย. 2569', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                          Text(
+                            'พ.ย. 2569',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                           SizedBox(width: 4),
-                          Icon(Icons.keyboard_arrow_down, size: 18, color: Colors.grey),
+                          Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                         ],
                       ),
                     ),
@@ -99,7 +129,11 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                     ),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
-                      BoxShadow(color: const Color(0xFF0072FF).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6)),
+                      BoxShadow(
+                        color: const Color(0xFF0072FF).withValues(alpha: 0.3),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
                     ],
                   ),
                   child: Column(
@@ -107,17 +141,28 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                     children: [
                       const Text(
                         'รายได้จากค่าธรรมเนียม (5%)',
-                        style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         '฿${((_overview['platform_fee_income'] ?? 0) as num).toStringAsFixed(0)}',
-                        style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         'จากการถอนเงินของร้าน ${_overview['fee_withdraw_count'] ?? 0} รายการ',
-                        style: const TextStyle(color: Colors.white70, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
@@ -132,7 +177,8 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                         icon: Icons.account_balance_wallet_outlined,
                         iconColor: const Color(0xFFD48806),
                         title: 'เครดิตคงค้างในระบบ',
-                        value: '${((_overview['total_credits'] ?? 0) as num).toStringAsFixed(0)}',
+                        value: ((_overview['total_credits'] ?? 0) as num)
+                            .toStringAsFixed(0),
                         subtitle: 'รวม Wallet สมาชิกและร้าน',
                       ),
                     ),
@@ -143,7 +189,8 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                         iconColor: AppTheme.primaryColor,
                         title: 'การจองเดือนนี้',
                         value: '${_overview['monthly_bookings'] ?? 0}',
-                        subtitle: 'เสร็จสิ้น ${_overview['completed_bookings'] ?? 0} รายการ',
+                        subtitle:
+                            'เสร็จสิ้น ${_overview['completed_bookings'] ?? 0} รายการ',
                       ),
                     ),
                   ],
@@ -157,7 +204,8 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                         iconColor: const Color(0xFF722ED1),
                         title: 'สมาชิก',
                         value: '${_overview['total_members'] ?? 0}',
-                        subtitle: 'ใหม่เดือนนี้ +${_overview['new_members_this_month'] ?? 0}',
+                        subtitle:
+                            'ใหม่เดือนนี้ +${_overview['new_members_this_month'] ?? 0}',
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -167,7 +215,8 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                         iconColor: const Color(0xFF389E0D),
                         title: 'ร้านล้างรถ',
                         value: '${_overview['total_shops'] ?? 0}',
-                        subtitle: 'รออนุมัติ ${_overview['pending_shops'] ?? 0} ร้าน',
+                        subtitle:
+                            'รออนุมัติ ${_overview['pending_shops'] ?? 0} ร้าน',
                       ),
                     ),
                   ],
@@ -175,7 +224,14 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                 const SizedBox(height: 24),
 
                 // Section "รอดำเนินการ" (Matches 4.4_Admin_Overview.png)
-                const Text('รอดำเนินการ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                const Text(
+                  'รอดำเนินการ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
                 const SizedBox(height: 12),
 
                 // Action Item 1: คำขอเปิดร้าน
@@ -183,34 +239,63 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                   onTap: () => widget.onNavigateTab?.call(1), // ไปแท็บคำขอร้าน
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.02),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
                       ],
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.storefront, color: AppTheme.primaryColor, size: 24),
+                        const Icon(
+                          Icons.storefront,
+                          color: AppTheme.primaryColor,
+                          size: 24,
+                        ),
                         const SizedBox(width: 14),
                         const Expanded(
-                          child: Text('คำขอเปิดร้าน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary)),
+                          child: Text(
+                            'คำขอเปิดร้าน',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFFFF7E6),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             '${_overview['pending_shops'] ?? 0} รายการ',
-                            style: const TextStyle(color: Color(0xFFD46B08), fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Color(0xFFD46B08),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
                       ],
                     ),
                   ),
@@ -222,34 +307,63 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                   onTap: () => widget.onNavigateTab?.call(2), // ไปแท็บการถอน
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.02),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
                       ],
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.arrow_upward, color: AppTheme.primaryColor, size: 24),
+                        const Icon(
+                          Icons.arrow_upward,
+                          color: AppTheme.primaryColor,
+                          size: 24,
+                        ),
                         const SizedBox(width: 14),
                         const Expanded(
-                          child: Text('คำขอถอนเครดิต', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary)),
+                          child: Text(
+                            'คำขอถอนเครดิต',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFFFF7E6),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             '${_overview['pending_withdrawals'] ?? 0} รายการ',
-                            style: const TextStyle(color: Color(0xFFD46B08), fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Color(0xFFD46B08),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
                       ],
                     ),
                   ),
@@ -272,16 +386,32 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                           color: const Color(0xFFFFF7E6),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.percent, color: Color(0xFFD48806), size: 24),
+                        child: const Icon(
+                          Icons.percent,
+                          color: Color(0xFFD48806),
+                          size: 24,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
-                            Text('ยกเว้นค่าธรรมเนียม 1 เดือนแรก', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                            Text(
+                              'ยกเว้นค่าธรรมเนียม 1 เดือนแรก',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                             SizedBox(height: 2),
-                            Text('โปรโมชั่นร้านใหม่ • ใช้อยู่ 6 ร้าน', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                            Text(
+                              'โปรโมชั่นร้านใหม่ • ใช้อยู่ 6 ร้าน',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppTheme.textMuted,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -291,11 +421,19 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
                           foregroundColor: AppTheme.primaryColor,
                           elevation: 0,
                           minimumSize: const Size(70, 34),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                         ),
                         onPressed: () => widget.onNavigateTab?.call(4),
-                        child: const Text('+ สร้าง', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        child: const Text(
+                          '+ สร้าง',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -321,7 +459,11 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -334,7 +476,10 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textSecondary,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -344,7 +489,11 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -358,4 +507,3 @@ class _AdminOverviewTabState extends State<AdminOverviewTab> {
     );
   }
 }
-

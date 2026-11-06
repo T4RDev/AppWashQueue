@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+
 import '../models/shop_model.dart';
 import '../models/vehicle_model.dart';
 import '../providers/shop_provider.dart';
@@ -65,7 +66,9 @@ class _BookingScreenState extends State<BookingScreen> {
           if (widget.initialServiceName != null) {
             try {
               matchedService = widget.shop.services.firstWhere(
-                (s) => s.name.contains(widget.initialServiceName!) || widget.initialServiceName!.contains(s.name),
+                (s) =>
+                    s.name.contains(widget.initialServiceName!) ||
+                    widget.initialServiceName!.contains(s.name),
               );
             } catch (_) {}
           }
@@ -111,7 +114,10 @@ class _BookingScreenState extends State<BookingScreen> {
     }
 
     final walletProvider = Provider.of<WalletProvider>(context, listen: false);
-    final bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+    final bookingProvider = Provider.of<BookingProvider>(
+      context,
+      listen: false,
+    );
 
     final price = _selectedService!.price;
     final currentBalance = walletProvider.wallet?.balance ?? 0.0;
@@ -147,7 +153,8 @@ class _BookingScreenState extends State<BookingScreen> {
     }
 
     // ไปหน้าชำระด้วยเครดิต (Matches 2.4_Pay_Credit.png)
-    final slotTime = '${_selectedSlot!.startTime.substring(0, 5)}–${_selectedSlot!.endTime.substring(0, 5)}';
+    final slotTime =
+        '${_selectedSlot!.startTime.substring(0, 5)}–${_selectedSlot!.endTime.substring(0, 5)}';
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -164,7 +171,9 @@ class _BookingScreenState extends State<BookingScreen> {
           timeSlotId: _selectedSlot!.id,
           bookingDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
           slotTimeRange: slotTime,
-          discountCode: _discountController.text.trim().isNotEmpty ? _discountController.text.trim() : null,
+          discountCode: _discountController.text.trim().isNotEmpty
+              ? _discountController.text.trim()
+              : null,
         ),
       ),
     );
@@ -203,7 +212,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const MyCarsScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const MyCarsScreen(),
+                            ),
                           );
                         },
                       ),
@@ -213,12 +224,14 @@ class _BookingScreenState extends State<BookingScreen> {
               )
             else
               DropdownButtonFormField<VehicleModel>(
-                value: _selectedVehicle,
+                initialValue: _selectedVehicle,
                 hint: const Text('แตะเพื่อเลือกรถที่บันทึกไว้'),
                 items: vehicleProvider.vehicles.map((v) {
                   return DropdownMenuItem(
                     value: v,
-                    child: Text('${v.plateNumber} (${v.brand} ${v.model} - ${v.vehicleTypeThai})'),
+                    child: Text(
+                      '${v.plateNumber} (${v.brand} ${v.model} - ${v.vehicleTypeThai})',
+                    ),
                   );
                 }).toList(),
                 onChanged: (val) {
@@ -235,12 +248,14 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<ServiceModel>(
-              value: _selectedService,
+              initialValue: _selectedService,
               hint: const Text('แตะเพื่อเลือกบริการ'),
               items: widget.shop.services.map((s) {
                 return DropdownMenuItem(
                   value: s,
-                  child: Text('${s.name} - ฿${s.price.toStringAsFixed(0)} (${s.vehicleType})'),
+                  child: Text(
+                    '${s.name} - ฿${s.price.toStringAsFixed(0)} (${s.vehicleType})',
+                  ),
                 );
               }).toList(),
               onChanged: (val) => setState(() => _selectedService = val),
@@ -267,7 +282,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -278,9 +296,15 @@ class _BookingScreenState extends State<BookingScreen> {
                   children: [
                     Text(
                       DateFormat('dd MMMM yyyy (EEEE)').format(_selectedDate),
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    const Icon(Icons.calendar_month, color: AppTheme.primaryColor),
+                    const Icon(
+                      Icons.calendar_month,
+                      color: AppTheme.primaryColor,
+                    ),
                   ],
                 ),
               ),
@@ -296,7 +320,10 @@ class _BookingScreenState extends State<BookingScreen> {
             if (shopProvider.availableSlots.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text('ไม่มีสล็อตเวลาว่างในวันนี้ หรือร้านปิดทำการ', style: TextStyle(color: AppTheme.textMuted)),
+                child: Text(
+                  'ไม่มีสล็อตเวลาว่างในวันนี้ หรือร้านปิดทำการ',
+                  style: TextStyle(color: AppTheme.textMuted),
+                ),
               )
             else
               Wrap(
@@ -314,8 +341,8 @@ class _BookingScreenState extends State<BookingScreen> {
                         color: !isAvailable
                             ? Colors.grey
                             : isSelected
-                                ? Colors.white
-                                : AppTheme.textPrimary,
+                            ? Colors.white
+                            : AppTheme.textPrimary,
                       ),
                     ),
                     selected: isSelected,
@@ -347,7 +374,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
             // สรุปยอดเงิน & Wallet
             Card(
-              color: AppTheme.primaryLight.withOpacity(0.5),
+              color: AppTheme.primaryLight.withValues(alpha: 0.5),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -358,7 +385,10 @@ class _BookingScreenState extends State<BookingScreen> {
                         const Text('ยอดเงินใน Wallet ของคุณ:'),
                         Text(
                           '฿${(walletProvider.wallet?.balance ?? 0.0).toStringAsFixed(2)}',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryDark),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryDark,
+                          ),
                         ),
                       ],
                     ),
@@ -369,7 +399,11 @@ class _BookingScreenState extends State<BookingScreen> {
                         const Text('ค่าบริการ:'),
                         Text(
                           '฿${(_selectedService?.price ?? 0.0).toStringAsFixed(2)}',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.primaryColor),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: AppTheme.primaryColor,
+                          ),
                         ),
                       ],
                     ),
@@ -390,4 +424,3 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 }
-

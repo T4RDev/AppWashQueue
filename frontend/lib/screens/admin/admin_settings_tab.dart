@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/api_service.dart';
 import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
@@ -48,15 +49,34 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: codeCtrl, decoration: const InputDecoration(labelText: 'โค้ดส่วนลด (เช่น WASH10)')),
+            TextField(
+              controller: codeCtrl,
+              decoration: const InputDecoration(
+                labelText: 'โค้ดส่วนลด (เช่น WASH10)',
+              ),
+            ),
             const SizedBox(height: 10),
-            TextField(controller: percentCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'เปอร์เซ็นต์ส่วนลด (%)')),
+            TextField(
+              controller: percentCtrl,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'เปอร์เซ็นต์ส่วนลด (%)',
+              ),
+            ),
             const SizedBox(height: 10),
-            TextField(controller: descCtrl, decoration: const InputDecoration(labelText: 'คำอธิบาย (เช่น ส่วนลดต้อนรับสมาชิกใหม่)')),
+            TextField(
+              controller: descCtrl,
+              decoration: const InputDecoration(
+                labelText: 'คำอธิบาย (เช่น ส่วนลดต้อนรับสมาชิกใหม่)',
+              ),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('ยกเลิก')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ยกเลิก'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(minimumSize: const Size(90, 40)),
             onPressed: () async {
@@ -102,7 +122,10 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text('ตั้งค่าระบบ & แอดมิน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'ตั้งค่าระบบ & แอดมิน',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -117,7 +140,11 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Row(
@@ -132,16 +159,41 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(user?.fullName ?? 'System Administrator', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(
+                          user?.fullName ?? 'System Administrator',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                         const SizedBox(height: 2),
-                        Text(user?.email ?? 'admin@washqueue.com', style: const TextStyle(fontSize: 13, color: AppTheme.textMuted)),
+                        Text(
+                          user?.email ?? 'admin@washqueue.com',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(color: const Color(0xFFE6F4FF), borderRadius: BorderRadius.circular(12)),
-                    child: const Text('Admin', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE6F4FF),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Admin',
+                      style: TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -155,7 +207,11 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Row(
@@ -166,13 +222,32 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('อัตราค่าธรรมเนียมถอนเงินของร้านค้า', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                        Text(
+                          'อัตราค่าธรรมเนียมถอนเงินของร้านค้า',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
                         SizedBox(height: 2),
-                        Text('คิด 5% จากยอดถอนเข้าบัญชี (แพลตฟอร์ม WashQ)', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                        Text(
+                          'คิด 5% จากยอดถอนเข้าบัญชี (แพลตฟอร์ม WashQ)',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Text('5.0%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.primaryColor)),
+                  Text(
+                    '5.0%',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -182,29 +257,54 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('โค้ดส่วนลดของระบบ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                const Text(
+                  'โค้ดส่วนลดของระบบ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
                     minimumSize: const Size(100, 36),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                   onPressed: _showCreateDiscountDialog,
                   icon: const Icon(Icons.add, size: 16),
-                  label: const Text('สร้างโค้ด', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'สร้างโค้ด',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
 
             if (_isLoading)
-              const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CircularProgressIndicator(),
+                ),
+              )
             else if (_discounts.isEmpty)
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-                child: const Center(child: Text('ยังไม่มีโค้ดส่วนลดที่สร้างไว้', style: TextStyle(color: AppTheme.textSecondary))),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: Text(
+                    'ยังไม่มีโค้ดส่วนลดที่สร้างไว้',
+                    style: TextStyle(color: AppTheme.textSecondary),
+                  ),
+                ),
               )
             else
               ..._discounts.map((d) {
@@ -220,36 +320,65 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.02),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
                     ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF7E6),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: const Color(0xFFFFD591)),
                         ),
-                        child: Text(code, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD46B08), fontSize: 14)),
+                        child: Text(
+                          code,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD46B08),
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('ลด $percent%', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                            Text(desc, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                            Text(
+                              'ลด $percent%',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              desc,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppTheme.textMuted,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Switch(
                         value: isActive,
-                        activeColor: const Color(0xFF00B96B),
+                        activeThumbColor: const Color(0xFF00B96B),
                         onChanged: (val) async {
                           final id = d['id'] ?? 0;
-                          final res = await _api.patch('${ApiConstants.adminDiscounts}/$id/status', body: {'is_active': val});
+                          final res = await _api.patch(
+                            '${ApiConstants.adminDiscounts}/$id/status',
+                            body: {'is_active': val},
+                          );
                           if (res.success) _fetchDiscounts();
                         },
                       ),
@@ -266,11 +395,16 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                 foregroundColor: AppTheme.error,
                 side: const BorderSide(color: AppTheme.error, width: 1.5),
                 minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
               onPressed: _handleLogout,
               icon: const Icon(Icons.logout),
-              label: const Text('ออกจากระบบ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              label: const Text(
+                'ออกจากระบบ',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
             ),
           ],
         ),
@@ -278,4 +412,3 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
     );
   }
 }
-

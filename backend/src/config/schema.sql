@@ -311,8 +311,8 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- --------------------------------------------------------------------
 INSERT INTO users (email, password_hash, full_name, phone, role, status)
 VALUES (
-    'admin@washqueue.com',
-    '$2a$10$wO0I7Z1m27qGgP9c2F5Mge8b5s2m8rY7jL1B6uM8h7o5N6k7P4wGi',
+    'admin@washq.com',
+    '$2b$10$VIv7zpp6tOmwKklWFbPgceoXGLliPEZUcfT3rT8hqrJLzEo5vRi0i',
     'System Administrator',
     '0800000000',
     'admin',

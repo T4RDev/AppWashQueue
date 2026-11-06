@@ -64,14 +64,21 @@ class ApiService {
 
   String _formatErrorMessage(dynamic e) {
     final str = e.toString().toLowerCase();
-    if (str.contains('socketexception') ||
-        str.contains('network is unreachable') ||
+    if (str.contains('connection refused') ||
+        str.contains('failed to connect') ||
+        str.contains('errno = 111') ||
+        str.contains('refused')) {
+      return 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ระบบได้ (กรุณาตรวจสอบว่าเซิร์ฟเวอร์ Backend รันอยู่หรือไม่)';
+    }
+    if (str.contains('network is unreachable') ||
         str.contains('failed host lookup') ||
-        str.contains('connection refused') ||
+        str.contains('no address associated with hostname')) {
+      return 'ไม่มีการเชื่อมต่อเครือข่าย กรุณาตรวจสอบสัญญาณอินเทอร์เน็ตของคุณ';
+    }
+    if (str.contains('socketexception') ||
         str.contains('clientexception') ||
-        str.contains('connection failed') ||
         str.contains('os error')) {
-      return 'ไม่ได้เชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบสัญญาณเน็ตของคุณ';
+      return 'เกิดปัญหาการเชื่อมต่อไปยังเซิร์ฟเวอร์ ($e)';
     }
     if (str.contains('timeoutexception')) {
       return 'การเชื่อมต่อหมดเวลา กรุณาลองใหม่อีกครั้ง';

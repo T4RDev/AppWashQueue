@@ -11,6 +11,7 @@ import '../core/app_theme.dart';
 import '../core/app_snackbar.dart';
 import 'wallet_screen.dart';
 import 'my_cars_screen.dart';
+import 'pay_credit_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   final ShopModel shop;
@@ -105,77 +106,28 @@ class _BookingScreenState extends State<BookingScreen> {
       return;
     }
 
-    // ยืนยันการตัดเงินและจองคิว
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('ยืนยันการชำระเงินและจองคิว'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('ร้าน: ${widget.shop.shopName}'),
-            Text('บริการ: ${_selectedService!.name}'),
-            Text('รถ: ${_selectedVehicle!.plateNumber} (${_selectedVehicle!.vehicleTypeThai})'),
-            Text('วันที่: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}'),
-            Text('เวลา: ${_selectedSlot!.timeRangeFormatted}'),
-            const Divider(height: 20),
-            Text(
-              'ยอดเงินที่จะตัดจาก Wallet: ฿${price.toStringAsFixed(0)}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.primaryColor),
-            ),
-          ],
+    // ไปหน้าชำระด้วยเครดิต (Matches 2.4_Pay_Credit.png)
+    final slotTime = '${_selectedSlot!.startTime.substring(0, 5)}–${_selectedSlot!.endTime.substring(0, 5)}';
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PayCreditScreen(
+          shopId: widget.shop.id,
+          shopName: widget.shop.shopName,
+          shopAddress: widget.shop.address,
+          vehicleId: _selectedVehicle!.id,
+          vehiclePlate: _selectedVehicle!.plateNumber,
+          vehicleType: _selectedVehicle!.vehicleTypeThai,
+          serviceId: _selectedService!.id,
+          serviceName: _selectedService!.name,
+          servicePrice: _selectedService!.price,
+          timeSlotId: _selectedSlot!.id,
+          bookingDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+          slotTimeRange: slotTime,
+          discountCode: _discountController.text.trim().isNotEmpty ? _discountController.text.trim() : null,
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('ยกเลิก'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('ยืนยันตัดเงินทันที'),
-          ),
-        ],
       ),
     );
-
-    if (confirm != true) return;
-
-    final result = await bookingProvider.createBooking(
-      shopId: widget.shop.id,
-      vehicleId: _selectedVehicle!.id,
-      serviceId: _selectedService!.id,
-      timeSlotId: _selectedSlot!.id,
-      bookingDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
-      discountCode: _discountController.text.trim().isNotEmpty ? _discountController.text.trim() : null,
-    );
-
-    if (!mounted) return;
-
-    if (result != null) {
-      await walletProvider.fetchMyWallet(); // อัปเดต balance
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => AlertDialog(
-          title: const Text('จองคิวสำเร็จ! 🎉'),
-          content: Text(
-            'รหัสการจองของคุณคือ ${result['booking_code']}\nระบบได้ตัดเงินจาก Wallet และแจ้งเตือนร้านค้าเรียบร้อยแล้ว',
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(ctx); // ปิด Dialog
-                Navigator.pop(context); // ปิดหน้า Booking
-              },
-              child: const Text('ตกลง'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      AppSnackBar.showError(context, bookingProvider.errorMessage ?? 'จองคิวไม่สำเร็จ');
-    }
   }
 
   @override

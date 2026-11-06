@@ -5,6 +5,7 @@ import '../../core/api_constants.dart';
 import '../../core/app_theme.dart';
 import '../../core/app_snackbar.dart';
 import '../../providers/auth_provider.dart';
+import 'owner_stats_screen.dart';
 
 class OwnerDashboardTab extends StatefulWidget {
   final Function(int tabIndex)? onNavigateTab;
@@ -114,7 +115,7 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                             ),
                           ],
                         ),
-                        Stack(
+                        Row(
                           children: [
                             Container(
                               decoration: BoxDecoration(
@@ -122,25 +123,46 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
                                 shape: BoxShape.circle,
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.notifications_none, color: Colors.white),
-                                onPressed: () {},
+                                icon: const Icon(Icons.bar_chart_rounded, color: Colors.white),
+                                tooltip: 'สถิติร้าน',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const OwnerStatsScreen()),
+                                  );
+                                },
                               ),
                             ),
-                            Positioned(
-                              right: 6,
-                              top: 6,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.redAccent,
-                                  shape: BoxShape.circle,
+                            const SizedBox(width: 8),
+                            Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.15),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.notifications_none, color: Colors.white),
+                                    onPressed: () {},
+                                  ),
                                 ),
-                                child: Text(
-                                  '${_stats['waiting'] ?? 0}',
-                                  style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            )
+                                Positioned(
+                                  right: 6,
+                                  top: 6,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      '${_stats['waiting'] ?? 0}',
+                                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ],
                         ),
                       ],
@@ -447,3 +469,4 @@ class _OwnerDashboardTabState extends State<OwnerDashboardTab> {
     );
   }
 }
+
